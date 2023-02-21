@@ -9,3 +9,5 @@ ipyfilechooser
 scikit-image
 scikit-learn
 schedule
+flask
+interval
