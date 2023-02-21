@@ -1,0 +1,11 @@
+matplotlib==3.3.4
+numpy
+opencv-python
+requests
+scipy==1.4.1
+lineTool
+motpy
+ipyfilechooser
+scikit-image
+scikit-learn
+schedule
