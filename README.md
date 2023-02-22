@@ -39,7 +39,7 @@ git clone https://github.com/IoTtalk/YOLOtalk-GUI.git
             |--record
 ```                        
 ## Step 2. 編譯 darknet
-進入==darknet==資料夾，並根據本身電腦環境，編輯==Makefile==檔案
+進入```darknet```資料夾，並根據本身電腦環境，編輯```Makefile```檔案
 參考: https://github.com/AlexeyAB/darknet#how-to-compile-on-linux-using-make
 ```code=
 GPU=1
@@ -100,12 +100,12 @@ python YOLOtalk.py
 
 ## 資料夾說明
 
-==cfg_person==
+### cfg_person
 
 1.coco.data : 放置指定的資料(classes、trainset、validset、names、backup)
 2.放置 v4、v7 各個模型 cfg 檔案
 
-==weights==
+### weights
 
 1.放置 v4-tiny、v7-tiny 權重檔案、訓練檔案
 2.若想使用 yolov4、v7 完整版可使用下面指令獲取檔案
@@ -120,8 +120,8 @@ wget https://github.com/AlexeyAB/darknet/releases/download/yolov4/yolov7.weights
 ```
 
 
+### YOLOTalk-GUI
 
-==YOLOTalk-GUI==
 1. YOLOTalk-GUI/static/Json_Info  : 放置各個圍籬紀錄參數檔案
 2. YOLOTalk-GUI/static/alias_pict : 放置各個圍籬所擷取圖片，用於 plotarea 功能繪製圍籬的底圖
 3. YOLOTalk-GUI/static/record     : 放置 YOLO_SSIM.py 所記錄之照片、圖片
