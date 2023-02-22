@@ -247,11 +247,8 @@ def management():
     # management items
     items = []
     filepath_list = os.listdir("./static/Json_Info/")
-
     for path in filepath_list:
-        if ".ipynb" in path:
-            continue
-        else:
+        if ".json" in path:
             path = "./static/Json_Info/" + path
             with open(path, "r", encoding="utf-8") as f:
                 file = json.load(f)
@@ -285,9 +282,10 @@ def streaming():
             )
 
     alias_list = os.listdir(r"static/alias_pict")
+    for alias in alias_list:
+        if '.gitignore' in alias:
+            alias_list.remove(alias)
     alias_list.sort()
-    if ".ipynb_checkpoints" in alias_list:
-        alias_list.remove(".ipynb_checkpoints")
 
     return render_template(
         "streaming.html",
@@ -359,9 +357,7 @@ def schedule():
     items = []
     filepath_list = os.listdir("./static/Json_Info/")
     for path in filepath_list:
-        if ".ipynb" in path:
-            continue
-        else:
+        if ".json" in path:
             path = "./static/Json_Info/" + path
             with open(path, "r", encoding="utf-8") as f:
                 file = json.load(f)
@@ -395,10 +391,10 @@ def dir_listing(req_path):
 @app.route("/video/<order>", methods=["GET", "POST"])
 def video_feed(order):
     alias_list = os.listdir(r"static/alias_pict")
+    for alias in alias_list:
+        if '.gitignore' in alias:
+            alias_list.remove(alias)
     alias_list.sort()
-    if ".ipynb_checkpoints" in alias_list:
-        alias_list.remove(".ipynb_checkpoints")
-
     if len(actived_yolo) > int(order):
         print(f"actived_yolo len = {len(actived_yolo)}, order = {order}")
         alias = alias_list[int(order)].replace(".jpg", "")

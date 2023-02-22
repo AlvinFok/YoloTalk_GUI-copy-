@@ -98,7 +98,7 @@ def read_all_fences():
     oldFences.sort()
     all_fences_names = []
     for name in oldFences:
-        if "ipynb" in name:
+        if '.png' or '.jpg' not in name:
             continue
         name = name[:-4]
         all_fences_names.append(name)
