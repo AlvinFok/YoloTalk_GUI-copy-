@@ -1,4 +1,14 @@
 # 忽略所有附檔名是 .tmp 的檔案
 *.o
-*/__pycache__
-*/__pycache__/*
+
+# C extensions
+*.so
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+
+# log file
+log.txt
