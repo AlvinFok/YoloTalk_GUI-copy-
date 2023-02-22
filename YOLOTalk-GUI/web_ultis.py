@@ -66,9 +66,9 @@ def Restart_YoloDevice():
                 old_sensitivity = float(Jdata["fence"][key]["Sensitivity"])
 
         yolo1 = YoloDevice(
-            config_file="../cfg_person/yolov4-tiny.cfg",
+            config_file="../cfg_person/yolov4.cfg",
             data_file="../cfg_person/coco.data",
-            weights_file="../weights/yolov4-tiny.weights",
+            weights_file="../weights/yolov4.weights",
             thresh=old_sensitivity,
             output_dir="./static/record/",
             video_url=URL,
@@ -159,8 +159,6 @@ def gen_frames(yolo):
             return frame
 
     print(f"========{yolo.alias}  YOLO 影像讀取中========")
-
-    time.sleep(0.5)
     filepath = f"static/Json_Info/camera_info_{str(yolo.alias)}.json"
     with open(filepath, "r", encoding="utf-8") as f:
         Jdata = json.load(f)
@@ -185,7 +183,9 @@ def gen_frames(yolo):
     bbox_colors = {} 
 
     while True:
+        start = time.time()
         frame = yolo.get_current_frame()
+        frame = frame.copy()
         # judge time schedule
         newtime_min = time.localtime(time.time()).tm_min
         if oldtime_min != newtime_min:
@@ -226,21 +226,24 @@ def gen_frames(yolo):
                     cls = target[0]
                     conf = target[1]
                     box = target[2]
-                    pt1 = (int(box[0]-0.5*box[2]), int(box[1]-0.5*box[3]))
-                    pt2 = (int(box[0]+0.5*box[2]), int(box[1]+0.5*box[3]))
+                    left, top, right, bottom = darknet.bbox2points(target[2])
                     id = target[3]
                     if bbox_colors.get(id) == None:
                         bbox_colors[id] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-
-                    cv2.rectangle(frame, pt1, pt2, bbox_colors[id], 3)
-                    cv2.putText(frame, f'{cls} {conf}', pt1, fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=bbox_colors[id])
-                    cv2.putText(frame, str(id), (int(box[0]), int(box[1])), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=bbox_colors[id])  
-
+                    cv2.rectangle(frame, (left, top), (right, bottom), bbox_colors[id], 3)
+                    cv2.putText(frame, f'{cls} {conf}', (left, top-10), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=bbox_colors[id], thickness=3)
+                    cv2.putText(frame, str(id), (int(box[0]), int(box[1])), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=bbox_colors[id], thickness=3)  
+        
+        time.sleep(1 / 30)  # make sure won't use too many bandwidth!
+        # compute fps
+        if time.time() - start > 0.001:
+            fps = round(1 / (time.time() - start), 1)
+            cv2.rectangle(frame, (0,0), (250,80), (255,255,255), -1)
+            cv2.putText(frame, f'FPS : {str(fps)}', (30,50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0,0,255), thickness=3)
         ret, buffer = cv2.imencode(".jpg", frame)
         frame = buffer.tobytes()
-
         yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n")
-        time.sleep(1 / 30)  # make sure won't use too many bandwidth!
+        
 
 
 def time_interval(yolo):

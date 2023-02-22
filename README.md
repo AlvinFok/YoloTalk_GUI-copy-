@@ -57,8 +57,7 @@ ZED_CAMERA_v2_8=0
 make
 ```
 
-:::danger
-若出現
+### NVCC 問題修正
 ```code= 
 /bin/sh: 1: nvcc: not found
 Makefile:185: recipe for target 'obj/convolutional_kernels.o' failed

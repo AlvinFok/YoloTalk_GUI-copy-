@@ -78,7 +78,7 @@ def home():
                     is_threading=True,
                     vertex=None,
                     alias=alias,
-                    display_message=False,
+                    display_message=True,
                     obj_trace=True,
                     save_img=True,
                     img_expire_day=3,
@@ -371,14 +371,16 @@ def schedule():
 @app.route("/", defaults={"req_path": ""})
 @app.route("/<path:req_path>")
 def dir_listing(req_path):
+
     if req_path == "favicon.ico":
         return "Error"
-    BASE_DIR = (
-        "./static"  # The static path under the Flask
-    )
-    abs_path = os.path.join(
-        BASE_DIR, req_path
-    )  # Joining the base and the requested path
+    elif "logo.png" in req_path:
+        abs_path = "static/logo.png"
+        return send_file(abs_path)
+    else:
+        BASE_DIR = "./static"  # The static path under the Flask
+        
+    abs_path = os.path.join(BASE_DIR, req_path)  # Joining the base and the requested path
     if not os.path.exists(abs_path):  # Return 404 if path doesn't exist
         print("Error")
     if os.path.isfile(abs_path):  # Check if path is a file and serve
