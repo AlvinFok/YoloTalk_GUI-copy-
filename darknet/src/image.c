@@ -38,7 +38,7 @@ float get_color(int c, int x, int max)
 
 static float get_pixel(image m, int x, int y, int c)
 {
-    assert(x < m.w && y < m.h && c < m.c);
+    // assert(x < m.w && y < m.h && c < m.c);
     return m.data[c*m.h*m.w + y*m.w + x];
 }
 static float get_pixel_extend(image m, int x, int y, int c)
@@ -445,8 +445,8 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                     }
                 }
                 image label = get_label_v3(alphabet, labelstr, (im.h*.02));
-                //draw_label(im, top + width, left, label, rgb);
-                draw_weighted_label(im, top + width, left, label, rgb, 0.7);
+                draw_label(im, top + width, left, label, rgb);
+                // draw_weighted_label(im, top + width, left, label, rgb, 0.7);
                 free_image(label);
             }
             if (selected_detections[i].det.mask) {
