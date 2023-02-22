@@ -14,7 +14,7 @@ __pycache__/
 *.py[cod]
 
 # log file
-log.txt
+YOLOTalk-GUI/log.txt
 
 # python file
 # YOLOTalk-GUI/config.py
