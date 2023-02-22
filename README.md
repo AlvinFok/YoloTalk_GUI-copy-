@@ -89,7 +89,7 @@ Config ={
     "DEBUG" : False,
     "use_reloader" : False,
     "host" : "127.0.0.1",
-    "port" : "5000",
+    "port" : "10XXX",  #    請自行修改
 }
 ```
 ## Step 5. Quick start

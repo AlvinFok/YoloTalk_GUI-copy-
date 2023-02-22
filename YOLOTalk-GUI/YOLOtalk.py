@@ -378,7 +378,7 @@ def dir_listing(req_path):
     if req_path == "favicon.ico":
         return "Error"
     BASE_DIR = (
-        "/home/apple895263/YOLOtalk_GUI/GUI/YOLOTalk-GUI/static"  # The static path under the Flask
+        "./static"  # The static path under the Flask
     )
     abs_path = os.path.join(
         BASE_DIR, req_path
