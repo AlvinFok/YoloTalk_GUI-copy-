@@ -17,7 +17,7 @@ __pycache__/
 log.txt
 
 # python file
-YOLOTalk-GUI/config.py
+# YOLOTalk-GUI/config.py
 YOLOTalk-GUI/static/alias_pict/*jpg
 YOLOTalk-GUI/static/Json_Info/*json
 YOLOTalk-GUI/static/record/*jpg
