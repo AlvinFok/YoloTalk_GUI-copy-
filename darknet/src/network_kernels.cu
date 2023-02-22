@@ -718,7 +718,7 @@ float *network_predict_gpu(network net, float *input)
             CHECK_CUDA(cudaDeviceSynchronize());
             printf("Try to capture graph... \n");
             //cudaGraph_t graph = (cudaGraph_t)net.cuda_graph;
-            // CHECK_CUDA(cudaStreamBeginCapture(stream0, cudaStreamCaptureModeGlobal));
+            CHECK_CUDA(cudaStreamBeginCapture(stream0, cudaStreamCaptureModeGlobal));
         }
 
         cuda_push_array(state.input, net.input_pinned_cpu, size);
