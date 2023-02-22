@@ -1,7 +1,9 @@
-# 忽略所有附檔名是 .tmp 的檔案
 *.o
+*.vscode
 
-# C extensions
+# darknet make file
+darknet/darknet
+darknet/*.so
 *.so
 
 # Byte-compiled / optimized / DLL files
@@ -13,3 +15,15 @@ __pycache__/
 
 # log file
 log.txt
+
+# python file
+YOLOTalk-GUI/config.py
+YOLOTalk-GUI/static/alias_pict/*jpg
+YOLOTalk-GUI/static/Json_Info/*json
+YOLOTalk-GUI/static/record/*jpg
+
+# big weights file
+weights/yolov4.weights
+weights/yolov7.weights
+weights/yolov4.conv.137
+weights/yolov7.conv.132
