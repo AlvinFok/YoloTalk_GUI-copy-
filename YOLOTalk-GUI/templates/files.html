@@ -1,9 +1,121 @@
-<ul>
-    {% for file in files %}
-    <li>
-        <a href="{{ (request.path + '/' if request.path != '/' else '') + file }}">
-            {{ file }}
-        </a>
-    </li>
-    {% endfor %}
-</ul>
+<!-- 宣告我們要套用模板 -->
+{% extends "base.html" %}
+
+{% block title %} YOLOTalk Home{% endblock %}
+
+{% block style %}
+<style>
+    /*    ______________ 字體設定 ______________   */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: rgb(116 109 109);
+    }
+
+    /*    ______________ 照片設定  不要爆掉 ______________   */
+    img {
+        max-width: 100%;
+    }
+
+    /*    ______________ 按鈕設定 ______________   */
+    .btn {
+        background-color: #b1d3f5;
+        color: rgb(116 109 109);
+        font-size: 20px;
+        margin-top: -3px;
+        text-align: right;
+    }
+
+    /*    ______________ 大看板上的選單 ______________   */
+    nav img {
+        width: 200px;
+    }
+
+    header li {
+        margin: 0 15px;
+        font-weight: bold;
+        font-size: 22px;
+    }
+
+    .dropdown-item {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    /*    ______________ 大看板 ______________   */
+    #intro .jumbotron {
+        height: 84vh;
+        padding: 200px 500px;
+    }
+
+    #intro .container-md {
+        position: relative;
+        top: 40%;
+        transform: translateY(-50%);
+        padding-top: 10px;
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-bottom: 1px;
+
+        border-style: solid;
+        border-color: rgb(116, 109, 109);
+        border-radius: 20px;
+        border-width: 5px;
+        background-color: #b1d3f5;
+    }
+
+    #intro .justify-content-between {
+        margin-left: 20px;
+        margin-bottom: 50px;
+    }
+
+    #intro #middle {
+        margin-top: 20px;
+    }
+
+    #intro .justify-content-center h4 {
+        font-size: 24px;
+        margin: 24px 25px;
+    }
+
+    #intro .justify-content-center input {
+        margin: 18px 0px;
+        width: 100%;
+        font-size: 14px;
+        background-color: rgb(255, 255, 255);
+        border-color: rgb(68, 70, 69);
+        color: black;
+    }
+
+    #intro .justify-content-end input {
+        margin-right: 0px;
+        font-size: 15px;
+        background-color: rgb(255, 255, 255);
+        border-color: rgb(68, 70, 69);
+        border-radius: 5px;
+        color: black;
+    }
+</style>
+{% endblock %}
+
+
+{% block intro %}
+<section id="intro">
+    <div class="jumbotron">
+        <div class="col align-self-center">
+            <ul>
+                {% for file in files %}
+                <li>
+                    <a href="{{ (request.path + '/' if request.path != '/' else '') + file }}">
+                        {{ file }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}
