@@ -111,10 +111,6 @@
                     </td>
                     <td id="{{item.alias}} {{key}}_Alarm_Level" style="font-size:20px">{{item.fence[key].Alarm_Level}}
                     </td>
-                    <!-- <td id="{{item.alias}} {{key}}_Data_File" style="font-size:20px">{{item.fence[key].Data_file}}
-                    </td>
-                    <td id="{{item.alias}} {{key}}_Config_File" style="font-size:20px">{{item.fence[key].Config_File}}
-                    </td> -->
                     <td id="{{item.alias}} {{key}}_Sensitivity" style="font-size:20px">{{item.fence[key].Sensitivity}}
                     </td>
                     <td id="{{item.alias}} {{key}}_Show_FPS" style="font-size:20px">{{item.fence[key].Show_FPS}}
@@ -161,10 +157,9 @@
                     <div class="form-management mb-2">
                         <label for="message-text" class="col-4 col-form-label">Model:</label>
                         <select id="select-model" class="col-5 col-form-control">
-                            <option id="yolov4">yolov4</option>
-                            <option id="yolov4-tiny">yolov4-tiny</option>
-                            <option id="yolov7">yolov7</option>
-                            <option id="yolov7-tiny">yolov7-tiny</option>
+                            {% for weight in weights %}
+                            <option id="{{weight}}">{{weight}}</option>
+                            {% endfor %}
                         </select>
                         <button type="button" id="Add_Group_Btn" class="btn btn-outline-success btn-sm"
                             data-target="#Add_Model_Modal" data-toggle="modal" data-dismiss="modal">Add Model</button>

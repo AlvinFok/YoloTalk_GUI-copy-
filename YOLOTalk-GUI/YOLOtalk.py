@@ -298,7 +298,14 @@ def management():
             with open(path, "r", encoding="utf-8") as f:
                 file = json.load(f)
                 items.append(file)
-    return render_template("management.html", navs=all_fences_names, items=items, postURL=postURL)
+    # weights files
+    weights = []
+    weightspath_list = os.listdir("../weights")
+    for path in weightspath_list:
+        if ".weights" in path:
+            weights.append(path.replace(".weights", ""))
+    weights.sort()
+    return render_template("management.html", navs=all_fences_names, items=items, weights=weights, postURL=postURL)
 
 
 @app.route("/streaming", methods=["GET", "POST"])
