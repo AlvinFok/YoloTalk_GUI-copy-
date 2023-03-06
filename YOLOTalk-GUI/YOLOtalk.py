@@ -5,7 +5,6 @@ from web_ultis import *
 
 # import below is jim's YOLOtalk code
 import sys
-
 sys.path.append("..")
 from libs.YOLO_SSIM import YoloDevice
 import time
@@ -61,11 +60,13 @@ def home():
                 Fence_info = {
                     "vertex":"Full image",
                     "Group":"-",
-                    "Alarm_Level":"General",  # General, High
                     "Data_file":"coco.data",
                     "Config_File":"yolov4.cfg",
                     "Weight_File":"yolov4.weights",
-                    "Sensitivity":0.5,
+                    "Sensitivity":0.5,  
+                    "Alarm_Level":"General",  # General, High
+                    "Show_FPS":True,
+                    "Show_Box":True,
                     "Schedule": {
                         "1": {"Start_time": "--:--", "End_time": "--:--"},
                     },
@@ -145,12 +146,14 @@ def plotarea():
 
         Fence_info = {
             "vertex": vertex,
-            "Group": "-",
-            "Alarm_Level": "General",  # General, High
+            "Group":"-",
             "Data_file":"coco.data",
             "Config_File":"yolov4.cfg",
             "Weight_File":"yolov4.weights",
-            "Sensitivity": "0.3",
+            "Sensitivity":0.5,  
+            "Alarm_Level":"General",  # General, High
+            "Show_FPS":True,
+            "Show_Box":True,
             "Schedule": {
                 "1": {"Start_time": "--:--", "End_time": "--:--"},
             },
@@ -226,20 +229,25 @@ def management():
             Alias = request.form.get("Alias")
             FenceName = request.form.get("FenceName")
             Group = request.form.get("Group")
-            Alarm_Level = request.form.get("Alarm_Level")
             # Data = request.form.get("Model")
             Config = request.form.get("Config")
             Model = request.form.get("Model")
-            print(Model)
             Sensitivity = request.form.get("Sensitivity")
+            Alarm_Level = request.form.get("Alarm_Level")
+            Show_FPS = request.form.get("Show_FPS")
+            Show_Box = request.form.get("Show_Box")
 
             filepath = "static/Json_Info/camera_info_" + str(Alias) + ".json"
             with open(filepath, "r", encoding="utf-8") as f:
                 Jdata = json.load(f)
 
+            # Change the json directly
             Jdata["fence"][FenceName]["Group"] = Group
             Jdata["fence"][FenceName]["Alarm_Level"] = Alarm_Level
+            Jdata["fence"][FenceName]["Show_FPS"] = Show_FPS
+            Jdata["fence"][FenceName]["Show_Box"] = Show_Box
 
+            # Adjust the written parameters
             if Model in ['yolov4', 'yolov4-tiny', 'yolov7', 'yolov7-tiny']:
                 data = Model + '.data'
                 Config = Model + '.cfg'
@@ -253,9 +261,9 @@ def management():
             Jdata["fence"][FenceName]["Config_File"] = Config
             Jdata["fence"][FenceName]["Weight_File"] = model
 
+            # Judge sensitivity is changed or not
             old_Sensitivity = Jdata["fence"][FenceName]["Sensitivity"]
             Jdata["fence"][FenceName]["Sensitivity"] = Sensitivity
-
             if old_Sensitivity != Sensitivity:
                 print(f"actived_yolo[alias].thresh : {actived_yolo[Alias].thresh}")
                 actived_yolo[Alias].thresh = float(Sensitivity)
@@ -263,15 +271,13 @@ def management():
             with open(filepath, "w", encoding="utf-8") as file:
                 json.dump(Jdata, file, separators=(",\n", ":"), indent=4)
 
-            return render_template(
-                "management.html", navs=all_fences_names, postURL=postURL
-            )
+            return render_template("management.html", navs=all_fences_names, postURL=postURL)
 
         if URL == "Delete":
 
             Alias = request.form.get("Alias")
             FenceName = request.form.get("FenceName")
-            print("Alias : ", Alias)
+            print("Delete Alias : ", Alias)
 
             filepath = "static/Json_Info/camera_info_" + str(Alias) + ".json"
             with open(filepath, "r", encoding="utf-8") as f:

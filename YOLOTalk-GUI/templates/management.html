@@ -13,6 +13,7 @@
     h4,
     h5,
     h6 {
+        margin-left: 50px;
         font-family: 'Noto Sans TC', sans-serif;
         color: rgb(116 109 109);
     }
@@ -77,7 +78,7 @@
 <section id="intro">
     <div class="jumbotron">
         <div class="row">
-            <h4> 選擇Fence or Group or Alias 分類表格 : 　 </h4>
+            <h4> Choosing use "Fence" or "Group" to sort form : 　　 </h4>
             <select id="sort_option" class="form-select form-select-lg mb-2" aria-label=".form-select-sm example"
                 onchange="sort_tr()">
                 <!-- <option value="None" selected>以Fence、Group、Alias分類 (尚未完成)</option> -->
@@ -93,6 +94,8 @@
                     <th scope="col" data-field="Model">Model</th>
                     <th scope="col" data-field="Alarm Level">Alarm Level</th>
                     <th scope="col" data-field="Sensitivity">Sensitivity</th>
+                    <th scope="col" data-field="Show_FPS">Show FPS</th>
+                    <th scope="col" data-field="Show_Box">Show Box</th>
                     <th scope="col" data-field="Edit">Edit</th>
                 </tr>
             </thead>
@@ -113,6 +116,10 @@
                     <td id="{{item.alias}} {{key}}_Config_File" style="font-size:20px">{{item.fence[key].Config_File}}
                     </td> -->
                     <td id="{{item.alias}} {{key}}_Sensitivity" style="font-size:20px">{{item.fence[key].Sensitivity}}
+                    </td>
+                    <td id="{{item.alias}} {{key}}_Show_FPS" style="font-size:20px">{{item.fence[key].Show_FPS}}
+                    </td>
+                    <td id="{{item.alias}} {{key}}_Show_Box" style="font-size:20px">{{item.fence[key].Show_Box}}
                     </td>
                     <td>
                         <img src="static\edit.png " id="{{item.alias}} {{key}}" onclick="edit_Modal(this)"
@@ -141,17 +148,17 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="form-group mb-2">
+                    <div class="form-management mb-2">
                         <label for="recipient-name" class="col-4 col-form-label">Group :</label>
                         <select id="select-group" class="col-5 col-form-control"></select>
                         <button type="button" id="Add_Group_Btn" class="btn btn-outline-success btn-sm"
                             data-target="#Add_Group_Modal" data-toggle="modal" data-dismiss="modal">Add Group</button>
                     </div>
-                    <div class="form-group mb-2">
+                    <div class="form-management mb-2">
                         <label for="message-text" class="col-4 col-form-label">Place :</label>
                         <input class="col-5 col-form-control" id="message-text-Place"></input>
                     </div>
-                    <div class="form-group mb-2">
+                    <div class="form-management mb-2">
                         <label for="message-text" class="col-4 col-form-label">Model:</label>
                         <select id="select-model" class="col-5 col-form-control">
                             <option id="yolov4">yolov4</option>
@@ -162,44 +169,44 @@
                         <button type="button" id="Add_Group_Btn" class="btn btn-outline-success btn-sm"
                             data-target="#Add_Model_Modal" data-toggle="modal" data-dismiss="modal">Add Model</button>
                     </div>
-                    <div class="form-group mb-2">
+                    <div class="form-management mb-2">
                         <label for="message-text" class="col-4 col-form-label">Sensitivity :</label>
                         <input class="col-5 col-form-control" id="message-text-Sensitivity" type="number"
                             placeholder="only 0.1 ~ 1" step="0.1" min="0.1" max="1"></input>
                     </div>
-                    <div class="form-group mb-2">
+                    <div class="form-management mb-2">
                         <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Alarm level :</label>
                         <select id="select-Alarm_Level" class="col-5 col-form-control">
                             <option selected>General </option>
                             <option> High </option>
                         </select>
                     </div>
-                    <hr size="8px" align="center" width="100%">
-                    <div class="form-check mb-2">
-                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Show FPS :(尚未完成)</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                    <hr size="8px" width="100%">
+                    <div class="form-management mb-2">
+                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Show FPS :</label>
+                            <div class="form-check-inline">
+                                <input class="form-check-input" type="radio" name="show-fps" id="show-fps-true" checked>
                                 <label class="form-check-label" for="flexRadioDefault1">
                                     True  
                                 </label>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                            <div class="form-check-inline">
+                                <input class="form-check-input" type="radio" name="show-fps" id="show-fps">
                                 <label class="form-check-label" for="flexRadioDefault1">
                                     False  
                                 </label>
                             </div>
                     </div>
-                    <div class="form-check mb-2">
-                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Show Box :(尚未完成)</label>
+                    <div class="form-management mb-2">
+                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Show Box :</label>
                         <div class="form-check-inline 2">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="flexRadioDefault1" checked>
+                            <input class="form-check-input" type="radio" name="show-box" id="show-box-true" checked>
                             <label class="form-check-label" for="flexRadioDefault1">
                                 True  
                             </label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault2" id="flexRadioDefault1">
+                            <input class="form-check-input" type="radio" name="show-box" id="show-box">
                             <label class="form-check-label" for="flexRadioDefault1">
                                 False  
                             </label>
@@ -229,7 +236,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group mb-2">
+                <div class="form-management mb-2">
                     <label for="message-text" class="col-3 col-form-label">Group :</label>
                     <input class="col-5 col-form-control" id="GroupName" required></input>
                 </div>
@@ -277,15 +284,15 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group mb-2">
+                <div class="form-management mb-2">
                     <label for="message-text" class="col-3 col-form-label">Data file :</label>
                     <input class="col-5 col-form-control" id="DataName" required></input>
                 </div>
-                <div class="form-group mb-2">
+                <div class="form-management mb-2">
                     <label for="message-text" class="col-3 col-form-label">Config file :</label>
                     <input class="col-5 col-form-control" id="ConfigName" required></input>
                 </div>
-                <div class="form-group mb-2">
+                <div class="form-management mb-2">
                     <label for="message-text" class="col-3 col-form-label">Weight file :</label>
                     <input class="col-5 col-form-control" id="WeightName" required></input>
                 </div>
@@ -309,9 +316,8 @@
     let select = document.querySelector("#select-model");
 
     $(document).ready(function () {
-
-        // Nav 導向畫圖頁面
         select.addEventListener("change", selectFun);
+        //  Navigate to the drawing page
         $("a#replot_fence").click(function () {
             fence = this.text
             FormName = "Form_" + fence
@@ -333,21 +339,49 @@
             $('input#WeightName').attr("value", WeightName);
         })
 
-        $("button#Add_Group_Btn").click(function () {
-            var title = document.getElementById('exampleModal');
-        });
+        // $("button#Add_Group_Btn").click(function () {
+        //     var title = document.getElementById('exampleModal');
+        // });
     });
 
     function selectFun() {
-        var selection_model = document.getElementById('select-model');
+        /*
+            Display the initialization of model parameter
+        */
         switchValue = select.options[select.selectedIndex].value;
         document.getElementById("select-model").selectedIndex = String(select.selectedIndex);
     }
     function set_selected_Model(selection_model, weight) {
+        /*
+            Display the initialization of model parameter
+        */
         weight = weight.replace(".weight", "")
         for (i = 0; i < selection_model.length; i++) {
             if (weight == selection_model[i].innerText) {
                 document.getElementById("select-model").selectedIndex = String(i);
+            }
+        }
+    }
+    function set_checked(checkedElement){
+        /*
+            Display the initialization of Show_fps and Show_box parameters
+        */
+        if(checkedElement.id.includes("FPS")){
+            if(checkedElement.innerText == "True")
+            {
+                $("#show-fps-true").attr("checked", "checked");
+            }
+            else{
+                $("#show-fps").attr("checked", "checked");
+            }
+        }
+        if(checkedElement.id.includes("Box")){
+            if(checkedElement.innerText == "True")
+            {
+                $("#show-box-true").attr("checked", "checked");
+            }
+            else{
+                $("#show-box").attr("checked", "checked");
             }
         }
     }
@@ -469,15 +503,18 @@
 
         var Name = document.getElementById(fencename.id + '_Name');
         var Group = document.getElementById(fencename.id + '_Group');
+        var Place = document.getElementById(fencename.id + '_Place');
         var Weight_File = document.getElementById(fencename.id + '_Weight_File');
         var Sensitivity = document.getElementById(fencename.id + '_Sensitivity');
-        var Place = document.getElementById(fencename.id + '_Place');
         var Alarm_Level = document.getElementById(fencename.id + '_Alarm_Level');
-        var selection = document.getElementById('select-group');
+        var selection_group = document.getElementById('select-group');
         var selection_model = document.getElementById('select-model');
-
-        check(selection, Group.innerText);
+        var Show_FPS = document.getElementById(fencename.id + '_Show_FPS');
+        var Show_Box = document.getElementById(fencename.id + '_Show_Box');
+        check(selection_group, Group.innerText);
         set_selected_Model(selection_model, Weight_File.innerText);
+        set_checked(Show_FPS)
+        set_checked(Show_Box)
 
         $('input#message-text-Place').attr("value", fencename.id.split(' ')[1]);
         $('input#message-text-Sensitivity').attr("value", Sensitivity.innerText);
@@ -504,18 +541,35 @@
         // var Config = document.getElementById('message-text-config');
         var Model = document.getElementById('select-model');
         var Sensitivity = document.getElementById('message-text-Sensitivity');
-        console.log("testtest:", switchValue)
+        var Show_FPS = $('#show-fps-true').is(":checked");
+        var Show_BOX = $('#show-box-true').is(":checked");
+        // Change the post paremeter status
+        if (!Show_FPS){
+            Show_FPS = "False";
+        }
+        else{
+            Show_FPS = "True";
+        }
+        if (!Show_BOX){
+            Show_BOX = "False";
+        }
+        else{
+            Show_BOX = "True";
+        }
+
         $.post("{{postURL}}",
             {
                 "URL": "Edit",
                 "Alias": Name.innerText.split(" ")[2],
                 "FenceName": Name.innerText.split(" ")[3],
                 "Group": Group.value,
-                "Alarm_Level": Alarm_Level.value,
                 // "Data": Data.value,
                 // "Config": Config.value,
                 "Model": switchValue,
                 "Sensitivity": Sensitivity.value,
+                "Alarm_Level": Alarm_Level.value,
+                "Show_FPS": Show_FPS,
+                "Show_Box": Show_BOX,
             });
         setTimeout(function () { location.reload(); }, 500);
     };
