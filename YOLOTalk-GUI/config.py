@@ -1,7 +1,7 @@
 
 Config ={
-    "DEBUG" : False,
+    "DEBUG" : True,
     "use_reloader" : False,
-    "host" : "127.0.0.1",
-    "port" : "10329",          
+    "host" : "0.0.0.0",
+    "port" : "10330",          
 }

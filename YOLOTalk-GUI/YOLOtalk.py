@@ -53,11 +53,27 @@ def home():
             print(f"stat : {stat}")
             if stat == True:
                 # Temporary information
-                data = {"alias": "", "viedo_url": "", "add_time": "", "fence": {}}
-
+                data = {"alias":"",
+                        "viedo_url":"",
+                        "add_time": "",
+                        "fence": {}
+                        }
+                Fence_info = {
+                    "vertex":"Full image",
+                    "Group":"-",
+                    "Alarm_Level":"General",  # General, High
+                    "Data_file":"coco.data",
+                    "Config_File":"yolov4.cfg",
+                    "Weight_File":"yolov4.weights",
+                    "Sensitivity":0.5,
+                    "Schedule": {
+                        "1": {"Start_time": "--:--", "End_time": "--:--"},
+                    },
+                }
                 data["alias"] = alias
                 data["viedo_url"] = URL
                 data["add_time"] = Addtime
+                data["fence"]["All"] = Fence_info
 
                 filepath = "static/Json_Info/camera_info_" + data["alias"] + ".json"
                 with open(filepath, "w", encoding="utf-8") as file:
@@ -69,23 +85,26 @@ def home():
 
                 # ======== FOR YOLO ========
                 yolo1 = YoloDevice(
-                    config_file="../cfg_person/yolov4-tiny.cfg",
-                    data_file="../cfg_person/coco.data",
-                    weights_file="../weights/yolov4-tiny.weights",
-                    thresh=0.3,
-                    output_dir="./static/record/",
-                    video_url=URL,
-                    is_threading=True,
-                    vertex=None,
-                    alias=alias,
-                    display_message=True,
-                    obj_trace=True,
-                    save_img=True,
-                    img_expire_day=3,
-                    save_video=False,
-                    video_expire_day=1,
-                    target_classes=["person"],
-                    auto_restart=False,
+                    data_file="../cfg_person/coco.data",    #   darknet file, preset is coco.data(80 classes)
+                    config_file="../cfg_person/yolov4.cfg", #   darknet file, preset is yolov4
+                    weights_file="../weights/yolov4.weights",   #   darknet file, preset is yolov4
+                    thresh=0.3, # Yolo threshold, float, range[0, 1] 
+                    output_dir="./static/record/",  # Output dir for saving results
+                    video_url=URL,  # Video url for detection
+                    is_threading=True,  # Set False if the input is video file
+                    vertex=None,  # vertex of fence, None -> get all image  
+                    alias=alias,    # Name the file and directory
+                    display_message=False,  # Show the message (FPS)
+                    obj_trace=True, # Object tracking
+                    save_img=True,  # Save image when Yolo detect
+                    save_img_original=False,    # Save original image and results when Yolo detect 
+                    img_expire_day=1,   # Delete the img file if date over the `img_expire_day`
+                    save_video=False,   # Save video including Yolo detect results
+                    video_expire_day=1, # Delete the video file if date over the `video_expire_day`
+                    target_classes=["person"],  # Set None to detect all target
+                    auto_restart=False, # Restart the program when RTSP video disconnection
+                    using_SSIM=False,    # Using SSIM to find the moving object
+                    SSIM_debug=False,    # Draw the SSIM image moving object even Yolo have detected object
                 )
                 print(f"\n======== Activing YOLO , alias:{alias}========\n")
                 yolo1.set_listener(on_data)
@@ -108,7 +127,6 @@ def home():
 @app.route("/plotarea", methods=["GET", "POST"])
 def plotarea():
 
-    all_fences_names = read_all_fences()
     postURL = GET_POST_URL("plotarea")
 
     if request.method == "POST":
@@ -129,8 +147,10 @@ def plotarea():
             "vertex": vertex,
             "Group": "-",
             "Alarm_Level": "General",  # General, High
-            "Note": " - ",
-            "Sensitivity": "0.5",
+            "Data_file":"coco.data",
+            "Config_File":"yolov4.cfg",
+            "Weight_File":"yolov4.weights",
+            "Sensitivity": "0.3",
             "Schedule": {
                 "1": {"Start_time": "--:--", "End_time": "--:--"},
             },
@@ -139,14 +159,18 @@ def plotarea():
         if os.path.isfile(filepath):  # If file is exist
             with open(filepath, "r", encoding="utf-8") as f:
                 Jdata = json.load(f)
-                print(f"Jdata:{Jdata}")
                 print(f"actived_yolo:{actived_yolo}")
             if vertex == "DELETE":
                 Jdata["fence"].pop(FenceName)
+                Fence_info["vertex"] = "Full image"
+                Jdata["fence"]["All"] = Fence_info
+
             elif vertex == "Rename":
                 Jdata["fence"][FenceName] = Jdata["fence"][oldName]  # copy
                 Jdata["fence"].pop(oldName)  # del
+
             else:
+                Jdata["fence"].pop("All")
                 Jdata["fence"][FenceName] = Fence_info
                 # ======== FOR YOLO ========
                 old_vertex = vertex[1:-1]
@@ -199,27 +223,42 @@ def management():
 
         if URL == "Edit":
 
-            alias = request.form.get("alias")
+            Alias = request.form.get("Alias")
             FenceName = request.form.get("FenceName")
             Group = request.form.get("Group")
             Alarm_Level = request.form.get("Alarm_Level")
-            Note = request.form.get("Note")
+            # Data = request.form.get("Model")
+            Config = request.form.get("Config")
+            Model = request.form.get("Model")
+            print(Model)
             Sensitivity = request.form.get("Sensitivity")
 
-            filepath = "static/Json_Info/camera_info_" + str(alias) + ".json"
+            filepath = "static/Json_Info/camera_info_" + str(Alias) + ".json"
             with open(filepath, "r", encoding="utf-8") as f:
                 Jdata = json.load(f)
 
             Jdata["fence"][FenceName]["Group"] = Group
             Jdata["fence"][FenceName]["Alarm_Level"] = Alarm_Level
-            Jdata["fence"][FenceName]["Note"] = Note
+
+            if Model in ['yolov4', 'yolov4-tiny', 'yolov7', 'yolov7-tiny']:
+                data = Model + '.data'
+                Config = Model + '.cfg'
+                model = Model + '.weight'
+            else:
+                data = Model.replace('.weights', '.data')
+                Config = Model.replace('.weights', '.cfg')  
+                model = Model
+            
+            Jdata["fence"][FenceName]["Data_file"] = data
+            Jdata["fence"][FenceName]["Config_File"] = Config
+            Jdata["fence"][FenceName]["Weight_File"] = model
 
             old_Sensitivity = Jdata["fence"][FenceName]["Sensitivity"]
             Jdata["fence"][FenceName]["Sensitivity"] = Sensitivity
 
             if old_Sensitivity != Sensitivity:
-                print(f"actived_yolo[alias].thresh : {actived_yolo[alias].thresh}")
-                actived_yolo[alias].thresh = float(Sensitivity)
+                print(f"actived_yolo[alias].thresh : {actived_yolo[Alias].thresh}")
+                actived_yolo[Alias].thresh = float(Sensitivity)
 
             with open(filepath, "w", encoding="utf-8") as file:
                 json.dump(Jdata, file, separators=(",\n", ":"), indent=4)
@@ -230,11 +269,11 @@ def management():
 
         if URL == "Delete":
 
-            alias = request.form.get("alias")
+            Alias = request.form.get("Alias")
             FenceName = request.form.get("FenceName")
-            print("alias : ", alias)
+            print("Alias : ", Alias)
 
-            filepath = "static/Json_Info/camera_info_" + str(alias) + ".json"
+            filepath = "static/Json_Info/camera_info_" + str(Alias) + ".json"
             with open(filepath, "r", encoding="utf-8") as f:
                 Jdata = json.load(f)
 
@@ -253,9 +292,7 @@ def management():
             with open(path, "r", encoding="utf-8") as f:
                 file = json.load(f)
                 items.append(file)
-    return render_template(
-        "management.html", navs=all_fences_names, items=items, postURL=postURL
-    )
+    return render_template("management.html", navs=all_fences_names, items=items, postURL=postURL)
 
 
 @app.route("/streaming", methods=["GET", "POST"])
