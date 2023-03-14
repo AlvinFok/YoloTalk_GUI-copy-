@@ -78,7 +78,7 @@
 <section id="intro">
     <div class="jumbotron">
         <div class="row">
-            <h4> Choosing use "Fence" or "Group" to sort form : 　　 </h4>
+            <h4> Choosing use "Fence" or "Group" to sort form : </h4>
             <select id="sort_option" class="form-select form-select-lg mb-2" aria-label=".form-select-sm example"
                 onchange="sort_tr()">
                 <!-- <option value="None" selected>以Fence、Group、Alias分類 (尚未完成)</option> -->
@@ -176,34 +176,50 @@
                             <option> High </option>
                         </select>
                     </div>
+                    <!-- Show Function -->
                     <hr size="8px" width="100%">
                     <div class="form-management mb-2">
                         <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Show FPS :</label>
-                            <div class="form-check-inline">
-                                <input class="form-check-input" type="radio" name="show-fps" id="show-fps-true" checked>
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    True  
-                                </label>
-                            </div>
-                            <div class="form-check-inline">
-                                <input class="form-check-input" type="radio" name="show-fps" id="show-fps">
-                                <label class="form-check-label" for="flexRadioDefault1">
-                                    False  
-                                </label>
-                            </div>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="show-fps" id="show-fps-true" checked>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                True
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="show-fps" id="show-fps">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                False
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-management mb-2">
+                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Show SSIM :</label>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="show-ssim" id="show-ssim-true" checked>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                True
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="show-ssim" id="show-ssim">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                False
+                            </label>
+                        </div>
                     </div>
                     <div class="form-management mb-2">
                         <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Show Box :</label>
                         <div class="form-check-inline 2">
                             <input class="form-check-input" type="radio" name="show-box" id="show-box-true" checked>
                             <label class="form-check-label" for="flexRadioDefault1">
-                                True  
+                                True
                             </label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="show-box" id="show-box">
                             <label class="form-check-label" for="flexRadioDefault1">
-                                False  
+                                False
                             </label>
                         </div>
                     </div>
@@ -357,25 +373,23 @@
             }
         }
     }
-    function set_checked(checkedElement){
+    function set_checked(checkedElement) {
         /*
             Display the initialization of Show_fps and Show_box parameters
         */
-        if(checkedElement.id.includes("FPS")){
-            if(checkedElement.innerText == "True")
-            {
+        if (checkedElement.id.includes("FPS")) {
+            if (checkedElement.innerText == "True") {
                 $("#show-fps-true").attr("checked", "checked");
             }
-            else{
+            else {
                 $("#show-fps").attr("checked", "checked");
             }
         }
-        if(checkedElement.id.includes("Box")){
-            if(checkedElement.innerText == "True")
-            {
+        if (checkedElement.id.includes("Box")) {
+            if (checkedElement.innerText == "True") {
                 $("#show-box-true").attr("checked", "checked");
             }
-            else{
+            else {
                 $("#show-box").attr("checked", "checked");
             }
         }
@@ -539,16 +553,16 @@
         var Show_FPS = $('#show-fps-true').is(":checked");
         var Show_BOX = $('#show-box-true').is(":checked");
         // Change the post paremeter status
-        if (!Show_FPS){
+        if (!Show_FPS) {
             Show_FPS = "False";
         }
-        else{
+        else {
             Show_FPS = "True";
         }
-        if (!Show_BOX){
+        if (!Show_BOX) {
             Show_BOX = "False";
         }
-        else{
+        else {
             Show_BOX = "True";
         }
 

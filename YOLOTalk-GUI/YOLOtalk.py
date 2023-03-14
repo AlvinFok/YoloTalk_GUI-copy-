@@ -1,16 +1,15 @@
-from flask import Flask, render_template, Response, request, send_file
-from web_ultis import Restart_YoloDevice
-from config import Config
 from web_ultis import *
-
-# import below is jim's YOLOtalk code
+from config import Config
+from web_ultis import Restart_YoloDevice
+from flask import Flask, render_template, Response, request, send_file
+from libs.YOLO_SSIM import YoloDevice
+import os
+import json
+import cv2
+import time
 import sys
 sys.path.append("..")
-from libs.YOLO_SSIM import YoloDevice
-import time
-import cv2
-import json
-import os
+
 
 app = Flask(__name__)
 
@@ -52,21 +51,21 @@ def home():
             print(f"stat : {stat}")
             if stat == True:
                 # Temporary information
-                data = {"alias":"",
-                        "viedo_url":"",
+                data = {"alias": "",
+                        "viedo_url": "",
                         "add_time": "",
                         "fence": {}
                         }
                 Fence_info = {
-                    "vertex":"Full image",
-                    "Group":"-",
-                    "Data_file":"coco.data",
-                    "Config_File":"yolov4.cfg",
-                    "Weight_File":"yolov4.weights",
-                    "Sensitivity":0.5,  
-                    "Alarm_Level":"General",  # General, High
-                    "Show_FPS":True,
-                    "Show_Box":True,
+                    "vertex": "Full image",
+                    "Group": "-",
+                    "Data_file": "coco.data",
+                    "Config_File": "yolov4.cfg",
+                    "Weight_File": "yolov4.weights",
+                    "Sensitivity": 0.5,
+                    "Alarm_Level": "General",  # General, High
+                    "Show_FPS": True,
+                    "Show_Box": True,
                     "Schedule": {
                         "1": {"Start_time": "--:--", "End_time": "--:--"},
                     },
@@ -76,7 +75,8 @@ def home():
                 data["add_time"] = Addtime
                 data["fence"]["All"] = Fence_info
 
-                filepath = "static/Json_Info/camera_info_" + data["alias"] + ".json"
+                filepath = "static/Json_Info/camera_info_" + \
+                    data["alias"] + ".json"
                 with open(filepath, "w", encoding="utf-8") as file:
                     json.dump(data, file, separators=(",\n", ":"), indent=4)
 
@@ -86,24 +86,25 @@ def home():
 
                 # ======== FOR YOLO ========
                 yolo1 = YoloDevice(
-                    data_file="../cfg_person/coco.data",    #   darknet file, preset is coco.data(80 classes)
-                    config_file="../cfg_person/yolov4.cfg", #   darknet file, preset is yolov4
-                    weights_file="../weights/yolov4.weights",   #   darknet file, preset is yolov4
-                    thresh=0.3, # Yolo threshold, float, range[0, 1] 
+                    # darknet file, preset is coco.data(80 classes)
+                    data_file="../cfg_person/coco.data",
+                    config_file="../cfg_person/yolov4.cfg",  # darknet file, preset is yolov4
+                    weights_file="../weights/yolov4.weights",  # darknet file, preset is yolov4
+                    thresh=0.3,  # Yolo threshold, float, range[0, 1]
                     output_dir="./static/record/",  # Output dir for saving results
                     video_url=URL,  # Video url for detection
                     is_threading=True,  # Set False if the input is video file
-                    vertex=None,  # vertex of fence, None -> get all image  
+                    vertex=None,  # vertex of fence, None -> get all image
                     alias=alias,    # Name the file and directory
                     display_message=False,  # Show the message (FPS)
-                    obj_trace=True, # Object tracking
+                    obj_trace=True,  # Object tracking
                     save_img=True,  # Save image when Yolo detect
-                    save_img_original=False,    # Save original image and results when Yolo detect 
+                    save_img_original=False,    # Save original image and results when Yolo detect
                     img_expire_day=1,   # Delete the img file if date over the `img_expire_day`
                     save_video=False,   # Save video including Yolo detect results
-                    video_expire_day=1, # Delete the video file if date over the `video_expire_day`
+                    video_expire_day=1,  # Delete the video file if date over the `video_expire_day`
                     target_classes=["person"],  # Set None to detect all target
-                    auto_restart=False, # Restart the program when RTSP video disconnection
+                    auto_restart=False,  # Restart the program when RTSP video disconnection
                     using_SSIM=False,    # Using SSIM to find the moving object
                     SSIM_debug=False,    # Draw the SSIM image moving object even Yolo have detected object
                 )
@@ -146,14 +147,14 @@ def plotarea():
 
         Fence_info = {
             "vertex": vertex,
-            "Group":"-",
-            "Data_file":"coco.data",
-            "Config_File":"yolov4.cfg",
-            "Weight_File":"yolov4.weights",
-            "Sensitivity":0.5,  
-            "Alarm_Level":"General",  # General, High
-            "Show_FPS":True,
-            "Show_Box":True,
+            "Group": "-",
+            "Data_file": "coco.data",
+            "Config_File": "yolov4.cfg",
+            "Weight_File": "yolov4.weights",
+            "Sensitivity": 0.5,
+            "Alarm_Level": "General",  # General, High
+            "Show_FPS": True,
+            "Show_Box": True,
             "Schedule": {
                 "1": {"Start_time": "--:--", "End_time": "--:--"},
             },
@@ -254,9 +255,9 @@ def management():
                 model = Model + '.weight'
             else:
                 data = Model.replace('.weights', '.data')
-                Config = Model.replace('.weights', '.cfg')  
+                Config = Model.replace('.weights', '.cfg')
                 model = Model
-            
+
             Jdata["fence"][FenceName]["Data_file"] = data
             Jdata["fence"][FenceName]["Config_File"] = Config
             Jdata["fence"][FenceName]["Weight_File"] = model
@@ -265,7 +266,8 @@ def management():
             old_Sensitivity = Jdata["fence"][FenceName]["Sensitivity"]
             Jdata["fence"][FenceName]["Sensitivity"] = Sensitivity
             if old_Sensitivity != Sensitivity:
-                print(f"actived_yolo[alias].thresh : {actived_yolo[Alias].thresh}")
+                print(
+                    f"actived_yolo[alias].thresh : {actived_yolo[Alias].thresh}")
                 actived_yolo[Alias].thresh = float(Sensitivity)
 
             with open(filepath, "w", encoding="utf-8") as file:
@@ -421,6 +423,7 @@ def schedule():
 @app.route("/", defaults={"req_path": ""})
 @app.route("/<path:req_path>")
 def dir_listing(req_path):
+    all_fences_names = read_all_fences()
 
     if req_path == "favicon.ico":
         return "Error"
@@ -429,15 +432,40 @@ def dir_listing(req_path):
         return send_file(abs_path)
     else:
         BASE_DIR = "./static"  # The static path under the Flask
-        
-    abs_path = os.path.join(BASE_DIR, req_path)  # Joining the base and the requested path
+
+    # Joining the base and the requested path
+    abs_path = os.path.join(BASE_DIR, req_path)
     if not os.path.exists(abs_path):  # Return 404 if path doesn't exist
         print("Error")
     if os.path.isfile(abs_path):  # Check if path is a file and serve
         return send_file(abs_path)
     files = os.listdir(abs_path)  # Show directory contents
     files.sort()
-    return render_template("files.html", files=files)
+    return render_template("files.html", files=files, navs=all_fences_names)
+
+
+@app.route("/", defaults={"req_path": ""})
+@app.route("/<path:req_path>")
+def training_dir_listing(req_path):
+    all_fences_names = read_all_fences()
+
+    if req_path == "favicon.ico":
+        return "Error"
+    elif "logo.png" in req_path:
+        abs_path = "static/logo.png"
+        return send_file(abs_path)
+    else:
+        BASE_DIR = "./static"  # The static path under the Flask
+
+    # Joining the base and the requested path
+    abs_path = os.path.join(BASE_DIR, req_path)
+    if not os.path.exists(abs_path):  # Return 404 if path doesn't exist
+        print("Error")
+    if os.path.isfile(abs_path):  # Check if path is a file and serve
+        return send_file(abs_path)
+    files = os.listdir(abs_path)  # Show directory contents
+    files.sort()
+    return render_template("training.html", files=files, navs=all_fences_names)
 
 
 @app.route("/video/<order>", methods=["GET", "POST"])
