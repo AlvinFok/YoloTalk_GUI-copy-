@@ -1,8 +1,16 @@
+from flask import Flask, render_template, Response, request, send_file, render_template_string
+from flask.helpers import get_root_path
+
 from web_ultis import *
 from config import Config
 from web_ultis import Restart_YoloDevice
-from flask import Flask, render_template, Response, request, send_file
+from dash_app import make_dash, make_layout, define_callbacks
 from libs.YOLO_SSIM import YoloDevice
+
+
+import dash_bootstrap_components as dbc
+import plotly.express as px
+import pathlib
 import os
 import json
 import cv2
@@ -444,29 +452,59 @@ def dir_listing(req_path):
     return render_template("files.html", files=files, navs=all_fences_names)
 
 
-@app.route("/", defaults={"req_path": ""})
-@app.route("/<path:req_path>")
-def training_dir_listing(req_path):
-    all_fences_names = read_all_fences()
+# @app.route("/", defaults={"req_path": ""})
+# @app.route("/<path:req_path>")
+# def training_dir_listing(req_path):
+#     all_fences_names = read_all_fences()
 
-    if req_path == "favicon.ico":
-        return "Error"
-    elif "logo.png" in req_path:
-        abs_path = "static/logo.png"
-        return send_file(abs_path)
-    else:
-        BASE_DIR = "./static"  # The static path under the Flask
+#     if req_path == "favicon.ico":
+#         return "Error"
+#     elif "logo.png" in req_path:
+#         abs_path = "static/logo.png"
+#         return send_file(abs_path)
+#     else:
+#         BASE_DIR = "./static"  # The static path under the Flask
 
-    # Joining the base and the requested path
-    abs_path = os.path.join(BASE_DIR, req_path)
-    if not os.path.exists(abs_path):  # Return 404 if path doesn't exist
-        print("Error")
-    if os.path.isfile(abs_path):  # Check if path is a file and serve
-        return send_file(abs_path)
-    files = os.listdir(abs_path)  # Show directory contents
-    files.sort()
-    return render_template("training.html", files=files, navs=all_fences_names)
+#     # Joining the base and the requested path
+#     abs_path = os.path.join(BASE_DIR, req_path)
+#     if not os.path.exists(abs_path):  # Return 404 if path doesn't exist
+#         print("Error")
+#     if os.path.isfile(abs_path):  # Check if path is a file and serve
+#         return send_file(abs_path)
+#     files = os.listdir(abs_path)  # Show directory contents
+#     files.sort()
+#     return render_template("training.html", files=files, navs=all_fences_names)
+# @app.route("/training")
+def dash_start():
 
+    # link : https://plotly.com/javascript/configuration-options/
+    config = {
+        "title:": 'LabelImg',
+        "displaylogo": False,
+        "displayModeBar": True,
+        "scrollZoom": False,
+        "modeBarButtonsToAdd": ["drawrect", "eraseshape", "select2d"],
+        "modeBarButtonsToRemove": ['zoom', 'zoomIn', 'zoomOut', 'zoom2d','pan2d', 'resetScale2d', 'toImage', 'zoomIn2d', 'zoomOut2d']     
+    }
+    
+    external_stylesheets = [dbc.themes.BOOTSTRAP, "../static/css/image_annotation_style.css"]
+    dash_app = make_dash(app, external_stylesheets=external_stylesheets)
+    dash_app.layout = make_layout(config)
+
+    # FYI, you need both an app context and a request context to use url_for() in the Jinja2 templates
+    # link : https://github.com/plotly/dash/issues/281#issuecomment-962159321
+    with app.app_context(), app.test_request_context():
+        layout_dash = pathlib.Path(get_root_path(__name__)).joinpath("templates").joinpath("dash_training.html")
+        with open(layout_dash, "r") as f:
+            html_body = render_template_string(f.read())
+        comments_to_replace = ("metas", "title", "favicon", "css", "app_entry", "config", "scripts", "renderer")
+        for comment in comments_to_replace:
+            html_body = html_body.replace(f"<!-- {comment} -->", "{%" + comment + "%}")
+        # print(f"html body:\n{html_body}")
+        dash_app.index_string = html_body
+    define_callbacks()
+
+dash_start()
 
 @app.route("/video/<order>", methods=["GET", "POST"])
 def video_feed(order):
