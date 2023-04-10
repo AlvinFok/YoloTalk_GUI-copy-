@@ -204,9 +204,7 @@ def plotarea():
                 json.dump(data, f, separators=(",\n", ":"), indent=4)
             data["fence"] = {}
 
-    return render_template(
-        "plotarea.html", data=IMGpath, name=str(alias), shape=shape, postURL=postURL
-    )
+    return render_template("plotarea.html", data=IMGpath, name=str(alias), shape=shape, postURL=postURL)
 
 
 @app.route("/management", methods=["GET", "POST"])
@@ -333,13 +331,7 @@ def streaming():
 
             IMGpath, shape = replot(alias, URL, Addtime)
             postURL = GET_POST_URL("plotarea")
-            return render_template(
-                "plotarea.html",
-                data=IMGpath,
-                name=str(alias),
-                shape=shape,
-                postURL=postURL,
-            )
+            return render_template("plotarea.html", data=IMGpath, name=str(alias), shape=shape, postURL=postURL)
 
     alias_list = os.listdir(r"static/alias_pict")
     for alias in alias_list:
@@ -363,6 +355,7 @@ def schedule():
 
     if request.method == "POST":
 
+        alias = request.form.get("area")
         URL = request.form.get("URL")
         Addtime = str(time.asctime(time.localtime(time.time())))[4:-5]
 
@@ -428,6 +421,76 @@ def schedule():
     )
 
 
+@app.route("/training_page", methods=["GET", "POST"])
+def training():
+    all_fences_names = read_all_fences()
+    postURL = GET_POST_URL("training_page")
+
+    if request.method == "POST":
+        alias = request.form.get("area")
+        URL = str(request.form.get("URL"))
+        Addtime = str(time.asctime(time.localtime(time.time())))[4:-5]
+
+        if URL == "REPLOT":
+            IMGpath, shape = replot(alias, URL, Addtime)
+            return render_template("plotarea.html", data=IMGpath, name=str(alias), shape=shape, postURL=postURL)
+        
+        # if URL == "CHOOSE_IMG":
+        #     alias = request.form.get("area")
+        #     classes = request.form.get("class")
+        #     folder = request.form.get("folder")
+        #     file = request.form.get("file")
+
+        #     print(f"alias : {alias}")
+        #     print(f"classes : {classes}")
+        #     print(f"folder : {folder}")
+        #     print(f"file : {file}")
+
+        #     aliases = os.listdir('static/record')
+        #     folders = os.listdir(f'static/record/{aliases[0]}/img_detect')
+        #     folders.sort()
+
+        #     tmp_folders = []
+        #     for folder in folders:
+        #         dirs_day = os.listdir(f'static/record/{aliases[0]}/img_detect/{folder}')
+        #         for hour in dirs_day:
+        #             tmp_folders.append(f'static/record/{aliases[0]}/img_detect/{folder}/{hour}')
+        #     tmp_folders.sort()
+
+
+        #     files = os.listdir(folder)
+        #     files.sort()
+
+        #     IMGpath = folder + '/' + file
+        #     first_fig = cv2.imread(IMGpath)
+        #     shape = first_fig.shape
+
+        # return render_template("training.html", data=IMGpath, aliases=aliases, folders=tmp_folders, files=files, shape=shape, navs=all_fences_names, postURL=postURL)
+    else:
+        alias = request.form.get("area")
+
+        aliases = os.listdir('static/record')
+        folders = os.listdir(f'static/record/{aliases[0]}/img_detect')
+        folders.sort()
+
+        tmp_folders = []
+        for folder in folders:
+            dirs_day = os.listdir(f'static/record/{aliases[0]}/img_detect/{folder}')
+            for hour in dirs_day:
+                tmp_folders.append(f'static/record/{aliases[0]}/img_detect/{folder}/{hour}')
+        tmp_folders.sort()
+
+        files = os.listdir(tmp_folders[0])
+        files.sort()
+
+        IMGpath = tmp_folders[0] + '/' + files[0]
+
+        first_fig = cv2.imread(IMGpath)
+        shape = first_fig.shape
+
+    return render_template("training.html", data=IMGpath, aliases=aliases, folders=tmp_folders, files=files, shape=shape, navs=all_fences_names, postURL=postURL)
+
+
 @app.route("/", defaults={"req_path": ""})
 @app.route("/<path:req_path>")
 def dir_listing(req_path):
@@ -451,61 +514,6 @@ def dir_listing(req_path):
     files.sort()
     return render_template("files.html", files=files, navs=all_fences_names)
 
-
-# @app.route("/", defaults={"req_path": ""})
-# @app.route("/<path:req_path>")
-# def training_dir_listing(req_path):
-#     all_fences_names = read_all_fences()
-
-#     if req_path == "favicon.ico":
-#         return "Error"
-#     elif "logo.png" in req_path:
-#         abs_path = "static/logo.png"
-#         return send_file(abs_path)
-#     else:
-#         BASE_DIR = "./static"  # The static path under the Flask
-
-#     # Joining the base and the requested path
-#     abs_path = os.path.join(BASE_DIR, req_path)
-#     if not os.path.exists(abs_path):  # Return 404 if path doesn't exist
-#         print("Error")
-#     if os.path.isfile(abs_path):  # Check if path is a file and serve
-#         return send_file(abs_path)
-#     files = os.listdir(abs_path)  # Show directory contents
-#     files.sort()
-#     return render_template("training.html", files=files, navs=all_fences_names)
-# @app.route("/training")
-def dash_start():
-
-    # link : https://plotly.com/javascript/configuration-options/
-    config = {
-        "title:": 'LabelImg',
-        "displaylogo": False,
-        "displayModeBar": True,
-        "scrollZoom": False,
-        "modeBarButtonsToAdd": ["drawrect", "eraseshape", "select2d"],
-        "modeBarButtonsToRemove": ['zoom', 'zoomIn', 'zoomOut', 'zoom2d','pan2d', 'resetScale2d', 'toImage', 'zoomIn2d', 'zoomOut2d']     
-    }
-    
-    external_stylesheets = [dbc.themes.BOOTSTRAP, "../static/css/image_annotation_style.css"]
-    dash_app = make_dash(app, external_stylesheets=external_stylesheets)
-    dash_app.layout = make_layout(config)
-
-    # FYI, you need both an app context and a request context to use url_for() in the Jinja2 templates
-    # link : https://github.com/plotly/dash/issues/281#issuecomment-962159321
-    with app.app_context(), app.test_request_context():
-        layout_dash = pathlib.Path(get_root_path(__name__)).joinpath("templates").joinpath("dash_training.html")
-        with open(layout_dash, "r") as f:
-            html_body = render_template_string(f.read())
-        comments_to_replace = ("metas", "title", "favicon", "css", "app_entry", "config", "scripts", "renderer")
-        for comment in comments_to_replace:
-            html_body = html_body.replace(f"<!-- {comment} -->", "{%" + comment + "%}")
-        # print(f"html body:\n{html_body}")
-        dash_app.index_string = html_body
-    define_callbacks()
-
-dash_start()
-
 @app.route("/video/<order>", methods=["GET", "POST"])
 def video_feed(order):
     alias_list = os.listdir(r"static/alias_pict")
@@ -523,11 +531,5 @@ def video_feed(order):
     else:
         return "Error"
 
-
 if __name__ == "__main__":
-    app.run(
-        debug=Config["DEBUG"],
-        use_reloader=Config["use_reloader"],
-        host=Config["host"],
-        port=Config["port"],
-    )
+    app.run(debug=Config["DEBUG"], use_reloader=Config["use_reloader"], host=Config["host"], port=Config["port"],)

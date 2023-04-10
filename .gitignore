@@ -15,6 +15,9 @@ __pycache__/
 */*/*/__pycache__/
 *.py[cod]
 
+# test file
+testplotly/*
+
 # log file
 YOLOTalk-GUI/log.txt
 

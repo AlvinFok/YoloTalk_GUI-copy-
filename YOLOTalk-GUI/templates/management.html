@@ -349,10 +349,6 @@
             $('input#ConfigName').attr("value", ConfigName);
             $('input#WeightName').attr("value", WeightName);
         })
-
-        // $("button#Add_Group_Btn").click(function () {
-        //     var title = document.getElementById('exampleModal');
-        // });
     });
 
     function selectFun() {
@@ -362,6 +358,7 @@
         switchValue = select.options[select.selectedIndex].value;
         document.getElementById("select-model").selectedIndex = String(select.selectedIndex);
     }
+
     function set_selected_Model(selection_model, weight) {
         /*
             Display the initialization of model parameter
@@ -398,7 +395,7 @@
         var choose_option = document.getElementById('sort_option').value    // select 選項值
 
         if (choose_option == "Fence") {           // Fence 選項
-            var all_tr = document.getElementsByClassName('info')                // tbody 全部的 <tr>
+            var all_tr = document.getElementsByClassName('info')            // tbody 全部的 <tr>
             // 前置作業
             // 拿到 全部排序的group 加入到 array_sort_group 的Array
             var array_fence = []
