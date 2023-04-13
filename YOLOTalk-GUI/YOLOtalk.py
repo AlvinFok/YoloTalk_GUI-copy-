@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, request, send_file, render_template_string
+from flask import Flask, render_template, Response, request, send_file, render_template_string, jsonify
 from flask.helpers import get_root_path
 
 from web_ultis import *
@@ -525,43 +525,61 @@ def video_feed(order):
     else:
         return "Error"
     
-def train_model(darknet_path, data_path, cfg_path, weights_path, output_path, mode="train", thresh=0.5):
-    """
-    darknet_path: darknet 資料夾與current working dir 的相對路徑
-    data_path: .data file和darknet資料夾的相對路徑
-    cfg_path: .cfg file和darknet資料夾的相對路徑
-    weights_path: .weights file和darknet資料夾的相對路徑
-    mode: "train" 表示使用 ./darkent detector train 指令
-          "valid" 表示使用 ./darkent detector map 指令
-    thresh: ./darkent detector map 指令的 threshold, 預設為0.5
-    -------------------------------------------------------------
-    return 產生的 ./darknet process 的 ID
-    """
-    current_working_dir = os.getcwd()
-    os.chdir(darknet_path)
-    if os.path.exists(output_path):
-        os.remove(output_path)
-    if not os.path.exists(data_path) or not os.path.exists(cfg_path) or not os.path.exists(weights_path):
-        if not os.path.exists(data_path):
-            print(f"file: {data_path} does not exists.")
-        if not os.path.exists(cfg_path):
-            print(f"file: {cfg_path} does not exists.")
-        if not os.path.exists(weights_path):
-            print(f"file: {weights_path} does not exists.")
-        os.chdir(current_working_dir)
-    else:
-        os.chdir(current_working_dir)
-        if mode == "train":
-            command = [f"./darknet detector train {data_path} {cfg_path} {weights_path} -map -dont_show > {output_path}"]
-        elif mode == "valid":
-            command = [f"./darknet detector map {data_path} {cfg_path} {weights_path} -thresh {thresh} > {output_path}"]
-        else:
-            command = [""]
-            print("Invalid mode. Please use \"train\" or \"valid\" string.")
-        p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, universal_newlines=True, cwd= darknet_path)
-        pid = subprocess.check_output(["pidof -s ./darknet"], shell=True)
+# training_log.html 頁面
+@app.route("/training_log", methods=["GET"])
+def training_log():
+    all_fences_names = read_all_fences()
+    trainURL = GET_POST_URL("train")
+    checkProcessURL = GET_POST_URL("check_process")
+    readTrainingTextURL = GET_POST_URL("read_training_txt")
+        
+    return render_template("training_log.html", navs=all_fences_names, trainURL=trainURL, checkProcessURL=checkProcessURL, readTrainingTextURL=readTrainingTextURL)
 
-    return int(pid.decode("utf-8"))
+# train 指令
+# 輸出檔預設儲存於 static/train_log.txt
+@app.route("/train", methods=["GET","POST"])
+def train():
+    if request.method == "POST":
+        darknet_path = request.values.get("darknet_path")
+        data_path = request.values.get("data_path")
+        cfg_path = request.values.get("cfg_path")
+        weights_path = request.values.get("weights_path")
+        output_path = "../YOLOTalk-GUI/static/train_log.txt"
+        # output_path = request.values.get("output_path")
+        mode = request.values.get("mode")
+        if mode == "train":
+            pid = train_model(darknet_path, data_path, cfg_path, weights_path, output_path, mode="train")
+        elif mode == "valid":
+            thresh = request.values.get("thresh")
+            if thresh != None: 
+                pid = train_model(darknet_path, data_path, cfg_path, weights_path, output_path, mode="valid", thresh=thresh)
+            else:
+                pid = train_model(darknet_path, data_path, cfg_path, weights_path, output_path, mode="valid")
+        else:
+            pid = "Invalid mode. Please use \"train\" or \"valid\" string."
+        
+    return jsonify({"pid": pid})
+
+# 確認training process 是否還在執行
+@app.route("/check_process", methods=["POST"])
+def check_process():
+    if request.method == "POST":
+        pid = int(request.values.get("pid"))
+        try:
+            os.kill(pid, 0)
+        except Exception as e:
+            return jsonify({"running": False})
+        else:
+            return jsonify({"running": True})
+
+# 讀取 train_log.txt
+@app.route("/read_training_txt", methods=["POST"])
+def read_training_txt():
+    path = request.values.get("path")
+    with open(os.path.join("./static/", path), "r") as file:
+        data = file.read()
+
+    return jsonify({"text": data})
 
 if __name__ == "__main__":
     app.run(debug=Config["DEBUG"], use_reloader=Config["use_reloader"], host=Config["host"], port=Config["port"],)
