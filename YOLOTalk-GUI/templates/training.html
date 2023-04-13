@@ -36,13 +36,18 @@
         height: 100px;
     }
 
-    .col-4 {
-        margin-bottom: 50px;
-        align-self: center;
+    /*    ______________ canvas ______________   */
+    #canvas-style {
+        width: 100%;
+        height: 60vh;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
     }
 
-    .col-4 #down {
-        margin-left: 30px;
+    #canvas {
+        max-width: 100%;
+        max-height: 60vh;
     }
 </style>
 {% endblock %}
@@ -58,58 +63,55 @@
                     <div class="card-header">
                         <h2>Annotation area</h2>
                     </div>
-                    <div class="card-body text-center">
+                    <div class="card-body text-center" id="canvas-style">
                         <canvas id="canvas" width="960" height="540" tabindex='1'
                             style="background-image:url( ' {{data}} ' ) ;background-size: cover; background-position: center; ">
                         </canvas>
                     </div>
                     <div class="card-footer">
-                        <h5>To annotate the above image, select an appropriate label on the right and then draw a
-                            rectangle
-                            with your cursor around the area of the image you wish to annotate.</h5>
-                        <br>
-                        <h4>Choose a different image to annotate:</h4>
+                        <div class="d-grid gap-5 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-info btn-lg" style="margin-right: 50px;">Previous
+                                Image</button>
+                            <button type="button" class="btn btn-info btn-lg">Next Image</button>
+                        </div>
                     </div>
-
                 </div>
             </div>
             <!-- Tabel Area -->
             <div class="col-sm-5">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Annotated data</h2>
+                        <h2>Annotated Data</h2>
                     </div>
                     <div class="card-body">
-                        <h3>Alias</h3>
+                        <h4>Alias</h4>
                         <div class="alias-select">
                             <select id="alias-select" class="custom-select custom-select-lg mb-2"
                                 onchange="selectChange()">
                                 {% for alias in aliases %}
-                                <option>{{alias}}</option>
+                                <option id="{{alias}}">{{alias}}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <h3>File Folder</h3>
+                        <br>
+                        <h4>File Folder</h4>
                         <div class="folder-select">
                             <select id="folder-select" class="custom-select custom-select-lg mb-2"
-                                onchange="selectChange()">
+                                onchange="changeFolder()">
                                 {% for folder in folders %}
-                                <option>{{folder}}</option>
+                                <option id="{{folder}}">{{folder}} </option>
                                 {% endfor %}
                             </select>
                         </div>
                         <br>
-                        <h3>File List:</h3>
+                        <h4>File List:</h4>
                         <div class="file-select">
                             <select id="file-select" class="custom-select custom-select-lg mb-2"
-                                onchange="IMG_Change()">
-                                {% for file in files %}
-                                <option>{{file}}</option>
-                                {% endfor %}
+                                onchange="changeImage()">
                             </select>
                         </div>
                         <br>
-                        <h3>Create new annotation for</h3>
+                        <h4>Classes</h4>
                         <div class="class-select">
                             <select id="class-select" class="custom-select custom-select-lg mb-2"
                                 onchange="selectChange()">
@@ -120,7 +122,7 @@
                         </div>
                         <br>
                         <!-- YOLO Label 資訊表格 -->
-                        <h3>Coordinates of annotations</h3>
+                        <h4>Coordinates of Annotations</h4>
                         <table class="table" id="box_table">
                             <thead>
                                 <tr id="first_row">
@@ -136,7 +138,7 @@
                         </table>
                     </div>
                     <div class="card-footer">
-                        <button>download</button>
+                        <button type="button" class="btn btn-danger btn-lg btn-block">Start Training</button>
                     </div>
                 </div>
             </div>
@@ -152,62 +154,86 @@
     var can = document.getElementById('canvas');
     var ctx = can.getContext('2d');
 
-    // 初始位置
-    var all_boxes = [];
-    var choose_class = "";
-    var click_box = [];
+    // 讀取 Jinja2 的 files 資料, safe 才不會進行 html 轉碼
+    var txt_files = {{ txt_files | safe
+    }};
+    var img_files = {{ img_files | safe
+    }};
 
-    var error_x = 120;
-    var error_y = 255;
+    // 儲存 bounding box 相關 array
+    var all_boxes = [];     // 圖上所有繪製的 bounding boxs
+    var click_box = [];     // 目前所點擊到的 bounding boxs
+
+    // 繪製功能參數
+    var drawing = false;                // 暫停繪製線條功能
+    var drawing_Fillbox = false;        // 暫停繪製選取 box 功能
+
+    // 滑鼠網頁上 offsets、位置參數
+    var offsets = document.getElementById('canvas').getBoundingClientRect();
+    var error_x = Math.floor(offsets.x);
+    var error_y = Math.floor(offsets.y);
+    var x = 0;
+    var y = 0;
+
+    // 紀錄 bounding box 左上角點的暫存參數
     var tmp_x = 0;
     var tmp_y = 0;
     var tmp_w = 0;
     var tmp_h = 0;
-    var x = 0;
-    var y = 0;
 
-
+    // 其他參數
+    var choose_class = "";              // select 所選擇的 class
     var box_number = 0;                 // 警戒範圍數量
-    var drawing = false;                // 暫停繪製線條功能
-    var drawing_Fillbox = false;        // 暫停繪製選取 box 功能
-    var timeStart, timeEnd, time;       // 判斷滑鼠按下間隔
-    var click_or_drag_time = 250;
+    var timeStart, timeEnd, time;       // 判斷滑鼠按下間隔參數
+    var click_or_drag_time = 350;       // 判斷滑鼠按下間隔 ms
 
     $(document).ready(function () {
-        // Reload()        // 重新叫出JSON 判斷是否原先有格子，並予以上色
+
+        changeFolder()   // 第一次進入頁面，讀取資料夾第一張照片
+
         //  Navigate to the drawing page
         $("a#replot_fence").click(function () {
             fence = this.text;
             FormName = "Form_" + fence;
             document.getElementById(FormName).submit();
         });
-
-
     });
 
+    // 頁面縮放時，更新 offset 參數
+    $(window).resize(function () {
+        /*
+        link : https://stackoverflow.com/questions/288699/get-the-position-of-a-div-span-tag
+        */
+        var offsets = document.getElementById('canvas').getBoundingClientRect();
+        error_x = Math.floor(offsets.x);
+        error_y = Math.floor(offsets.y);
+    });
+
+    // 按下以後，尚未放開
     $("canvas").mousedown(function (e) {
 
         drawing = true;                 // 開始繪製移動的 label box
         click_box = [];                 // 將剛才點擊到的 label box 清除
         ctx.clearRect(0, 0, canvas.width, canvas.height);   // 將剛才點擊到的 label box 在圖上清除
-        table_ReFill(click_box);        // 將剛才點擊到的 label box table 清除
+        refillTable(click_box);        // 將剛才點擊到的 label box table 清除
 
         x = e.pageX - error_x;
         y = e.pageY - error_y;
         tmp_x = e.pageX - error_x;      // 得到 label box 第一個點 x
         tmp_y = e.pageY - error_y;      // 得到 label box 第一個點 y
-        replot_saved_rectangle();       // 將已經畫的的 label box 繪製出來
+        replotSavedRectangle();       // 將已經畫的的 label box 繪製出來
 
-        timeStart = getTimeNow();
+        timeStart = getTimeNow();       // 開始計算拖拉間隔
     });
 
+    // 按下以後，已經放開，判斷拖拉時間是否超過 click_or_drag_time 來做 "點擊" or "拖拉" 操作
     $("canvas").mouseup(function (e) {
         time = setInterval(function () {
             timeEnd = getTimeNow();     // 得到滑鼠按下放開的間隔時間，判斷是 "拖拉"還是"點擊"事件
             // 拖拉
             if (timeEnd - timeStart > click_or_drag_time) {
-                get_choose_class()      // 得到 label box class
-                mouse_direct()
+                getClasses()      // 得到 label box class
+                getMouseDirect()          // 判斷滑鼠座標往第幾象限方向拉
                 all_boxes.push([choose_class, tmp_x, tmp_y, tmp_w, tmp_h]) // 記錄進所有box資訊
                 createTable(all_boxes); // 寫入 label box table
                 box_number += 1;
@@ -215,7 +241,7 @@
             // 點擊
             else {
                 if (box_number > 0) {
-                    check_is_inside_of_box(tmp_x, tmp_y)
+                    checkIsinsideBox(tmp_x, tmp_y)
                     x = e.pageX - error_x;
                     y = e.pageY - error_y;
                 };
@@ -225,27 +251,30 @@
         }, 100);
     });
 
+    // 滑鼠移動事件
     $("canvas").mousemove(function (e) {
         var x = e.pageX - error_x;
         var y = e.pageY - error_y;
-        Move(x, y);                 // 顯示十字線條
-        replot_saved_rectangle()    // 將 all_boxes 內的 boxes 再畫出來
 
+        move(x, y);                // 顯示十字線條
+        replotSavedRectangle();    // 將 all_boxes 內的 boxes 再畫出來
         // 畫出拖曳框框的功能
         if (drawing) {
             tmp_w = x - tmp_x;
             tmp_h = y - tmp_y;
-            Plot_rectangle(tmp_x, tmp_y, tmp_w, tmp_h);
+            plotRectangle(tmp_x, tmp_y, tmp_w, tmp_h);
         };
+        // 將已經被點擊的 bounding box 塗色功能
         if (drawing_Fillbox) {
-            Fill(click_box);
-            table_Fill(click_box);
+            fillClickedBox(click_box);
+            fillTable(click_box);
         }
     });
 
     $('canvas').keydown(function (key_event) {
         // link : https://stackoverflow.com/questions/12886286/addeventlistener-for-keydown-on-canvas
-        console.log(key_event.keyCode);
+        var file_select = document.getElementById('file-select');
+
         if (key_event.keyCode == 46 && click_box != []) {
             for (let i = 0; i < click_box.length; i++) {
                 for (let j = 0; j < all_boxes.length; j++) {
@@ -255,97 +284,45 @@
                     };
                 };
             };
+            click_box = [];
+            move(x, y);             // 將滑鼠座標立刻顯示出來
+            createTable(all_boxes); // 寫入 label box table
         };
-        click_box = [];
-        Move(x, y);
-        createTable(all_boxes); // 寫入 label box table
+
+        // 下一張
+        if (key_event.keyCode == 68 && file_select.selectedIndex != file_select.length - 1) {
+            choose_file = file_select.options[file_select.selectedIndex + 1].text;
+            IMGpath = choose_folder + '/' + choose_file;
+            document.getElementById("canvas").style.backgroundImage = 'url(' + IMGpath + ')';
+            file_select.selectedIndex += 1;
+
+            clearImage();           // 原本的圖片清除
+            readYOLOBoxes();        // 讀新的 YOLO boxes
+            createTable(all_boxes); // 原本的表格清除，放上新的表格
+            replotSavedRectangle(); // 畫上新的 YOLO boxes
+
+        };
+
+        // 上一張
+        if (key_event.keyCode == 65 && file_select.selectedIndex != 0) {
+            choose_file = file_select.options[file_select.selectedIndex - 1].text;
+            IMGpath = choose_folder + '/' + choose_file;
+            document.getElementById("canvas").style.backgroundImage = 'url(' + IMGpath + ')';
+            file_select.selectedIndex -= 1;
+            clearImage();
+            readYOLOBoxes();      // 讀新的 YOLO boxes
+            createTable(all_boxes); // 原本的表格清除，放上新的表格
+            replotSavedRectangle();
+        };
     })
 
 
-    /*
-        $("input#Delete").click(function () {
-            var oldName = "none"
-            Del_FenceName = FenceNameList[DeleteNumber - 1]
-    
-    
-            all_point_x_y.splice(DeleteNumber - 1, 1);
-            FenceNameList.splice(DeleteNumber - 1, 1);
-    
-            box_number -= 1;
-    
-            point_x_y = [];
-            point_x = [];                                           // 把剛剛的點刪掉
-            point_y = [];                                           // 把剛剛的點刪掉        
-            mouse_times = 0;                                       // 重新開始
-            DeleteNumber = 0;
-    
-            $.post("{{postURL}}",
-                {
-                    "vertex": "DELETE",
-                    "alias": "{{name}}",
-                    "FenceName": Del_FenceName,
-                    "oldName": "",
-                },
-                function (data, status, jqXHR) {// success callback
-                    alert('status : ' + status + ',\nFenceName : ' + JSON.stringify(Del_FenceName) + " is been deleted");
-                });
-    
-    
-        });
-    
-        $("input#Save").click(function () {
-            var FenceName = $('#FenceName').val();
-            var vertex = JSON.stringify(all_point_x_y[box_number - 1]);
-    
-            // 更名模式
-            if (DeleteNumber != 0) {
-                point_x_y = [];
-                point_x = [];                                           // 把剛剛的點刪掉
-                point_y = [];                                           // 把剛剛的點刪掉        
-                mouse_times = 0;                                       // 重新開始
-    
-                oldName = FenceNameList[DeleteNumber - 1]                 // 紀錄舊的名稱
-                FenceNameList.splice(DeleteNumber - 1, 1);                 // 刪除舊的名稱在LIST 內的位置
-                vertex = "Rename"
-                DeleteNumber = 0;
-            }
-    
-            // 若名字為空，則給予預設格式
-            if (FenceName == "") {
-                let date = new Date();
-                if (date.getMonth() + 1 < 10) {
-                    month = String(date.getFullYear()) + "0" + (date.getMonth() + 1)
-                }
-                else {
-                    month = String(date.getFullYear()) + (date.getMonth() + 1)
-                }
-                dataValues = month + String(date.getDate()) + "_" + String(date.getHours()) + ":" + String(date.getMinutes()) + ":" + String(date.getSeconds())
-                FenceName = dataValues
-            }
-    
-            FenceNameList.push(FenceName)                          // 加入NameList
-    
-            $.post("{{postURL}}",
-                {
-                    "vertex": vertex,
-                    "alias": "{{name}}",
-                    "FenceName": FenceName,
-                    "oldName": oldName
-                },
-    
-                function (data, status, jqXHR) {// success callback
-                    alert('status : ' + status + ',\nFenceName : ' + FenceName + "\npoint : " + vertex + "\noldName : " + oldName);
-                }
-            );
-        });
-    */
-
-
     // 點擊前，將移動時的十字線畫出來
-    function Move(x1, y1) {
-        ctx.globalAlpha = 0.5;      // reset the transparency of line
-        ctx.lineWidth = 2;          // line width
-        ctx.strokeStyle = 'gray';   // change the color of line
+    function move(x1, y1) {
+        // 移動十字
+        ctx.globalAlpha = 0.5;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'gray';
         ctx.beginPath();
         ctx.moveTo(x1, 0);
         ctx.lineTo(x1, 540);
@@ -355,16 +332,17 @@
         ctx.closePath();
         ctx.stroke();
 
+        // 移動座標字體
         ctx.globalAlpha = 1;
-        ctx.font = "30px Comic Sans MS";
+        ctx.font = "20px Comic Sans MS";
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
         text = String(x1) + "," + String(y1)
-        ctx.fillText(text, x1 + 100, y1 - 20);
+        ctx.fillText(text, x1 + 50, y1 - 20);
     }
 
     // 點擊後，將 Label box 的框框繪製出來
-    function Plot_rectangle(x, y, w, h) {
+    function plotRectangle(x, y, w, h) {
 
         ctx.globalAlpha = 1;        // reset the transparency of line
         ctx.lineWidth = 4;          // line width
@@ -375,10 +353,10 @@
     }
 
     // 移動時，將所以 Label box 繪製出來
-    function replot_saved_rectangle() {
+    function replotSavedRectangle() {
         if (box_number > 0) {
             for (let i = 0; i < all_boxes.length; i += 1) {
-                Plot_rectangle(all_boxes[i][1], all_boxes[i][2], all_boxes[i][3], all_boxes[i][4]) // (x, y, w, h)
+                plotRectangle(all_boxes[i][1], all_boxes[i][2], all_boxes[i][3], all_boxes[i][4]) // (x, y, w, h)
             }
         }
     }
@@ -413,13 +391,13 @@
     }
 
     // 拿到 Class 選項
-    function get_choose_class() {
+    function getClasses() {
         var select = document.getElementById('class-select');
         choose_class = select.options[select.selectedIndex].text;
     };
 
     // 確認滑鼠是否點到 label box 內部
-    function check_is_inside_of_box(x, y) {
+    function checkIsinsideBox(x, y) {
         if (box_number > 0) {
             for (let i = 0; i < box_number; i++) {  // 用外面這個迴圈找到所有box的點、長度
                 var Polygon = [];
@@ -432,14 +410,14 @@
                     click_box.push([all_boxes[i][1], all_boxes[i][2], all_boxes[i][3], all_boxes[i][4]])
                 };
             };
-            Fill(click_box);
-            table_Fill(click_box);
+            fillClickedBox(click_box);
+            fillTable(click_box);
             drawing_Fillbox = true;
         };
     };
 
+    // ray-casting algorithm 來找到是否在內部
     function Isinside(point, vs) {
-        // ray-casting algorithm based on
 
         var x0 = point[0], y0 = point[1];
         var inside = false;
@@ -457,7 +435,7 @@
     };
 
     // 將被點擊到的 label box 塗上顏色
-    function Fill(click_box) {
+    function fillClickedBox(click_box) {
         ctx.globalAlpha = 0.5;
         ctx.fillStyle = "red";
         ctx.beginPath();
@@ -469,7 +447,7 @@
     };
 
     // 將被點擊到的 label box 對應的表格塗上顏色
-    function table_Fill(click_box) {
+    function fillTable(click_box) {
         var table_row = document.getElementById('box_info').getElementsByTagName("tr");
 
         for (var i = 0; i < table_row.length; i++) {
@@ -478,17 +456,17 @@
             table_y = 1 * cells[2].innerText - 0.5 * cells[4].innerText
             table_w = 1 * cells[3].innerText
             table_h = 1 * cells[4].innerText
-            for (let i = 0; i < click_box.length; i++) {
-                if ((table_x == click_box[i][0]) && (table_y == click_box[i][1]) && (table_w == click_box[i][2]) && (table_h == click_box[i][3])) {
+            for (let j = 0; j < click_box.length; j++) {
+                if ((table_x == click_box[j][0]) && (table_y == click_box[j][1]) && (table_w == click_box[j][2]) && (table_h == click_box[j][3])) {
                     table_row[i].style.backgroundColor = "gray";
-                    table_row[i].style.color = "red";
+                    table_row[i].style.color = "white";
                 };
             };
         };
     };
 
     // 將被點擊到的 label box 對應的表格取消塗上顏色
-    function table_ReFill(click_box) {
+    function refillTable(click_box) {
         var table_row = document.getElementById('box_info').getElementsByTagName("tr");
         for (var i = 0; i < table_row.length; i++) {
             table_row[i].style.backgroundColor = "white";
@@ -496,8 +474,8 @@
         };
     }
 
-    // 判斷滑鼠座標往第幾項線方向拉
-    function mouse_direct() {
+    // 判斷滑鼠座標往第幾象限方向拉
+    function getMouseDirect() {
         if (tmp_w < 0 && tmp_h < 0) {       //左上
             tmp_x += tmp_w
             tmp_y += tmp_h
@@ -534,10 +512,8 @@
         }
         else {
             choose_file = file_select.options[file_select.selectedIndex].text;
-            set_selected_IMG(file_select, choose_file)
+
         }
-        // choose_file = file_select.options[file_select.selectedIndex].text;
-        console.log(choose_class, choose_alias, choose_folder, choose_file)
 
         $.post("{{postURL}}",
             {
@@ -557,86 +533,82 @@
         }, 5000);
     }
 
-    function IMG_Change() {
+    // 圖片變換時，換新的背景，並將原本的框線清除，讀新的 YOLO boxes，原本的表格清除，放上新的表格
+    function changeImage() {
         var folder_select = document.getElementById('folder-select');
         var file_select = document.getElementById('file-select');
 
         choose_folder = folder_select.options[folder_select.selectedIndex].text;
         choose_file = file_select.options[file_select.selectedIndex].text;
-        IMGpath = choose_folder + '/' + choose_file
-        document.getElementById("canvas").style.backgroundImage = 'url(' + IMGpath + ')'
-        // set_selected_IMG(file_select, choose_file)
+        IMGpath = choose_folder + '/' + choose_file;
+        document.getElementById("canvas").style.backgroundImage = 'url(' + IMGpath + ')';
 
+        clearImage();              // 原本的框線清除
+        readYOLOBoxes();          // 讀新的 YOLO boxes
+        createTable(all_boxes);     // 原本的表格清除，放上新的表格
+        replotSavedRectangle();   // 繪製新的 boxes
+    };
+
+    // for 迴圈新增 select 至 File List 選單
+    function changeFolder() {
+        var folder_select = document.getElementById('folder-select');
+        var file_select = document.getElementById('file-select');
+
+        choose_folder_index = folder_select.options[folder_select.selectedIndex].index;
+        // 先將舊的 select 資料刪除
+        while (file_select.hasChildNodes()) {
+            file_select.removeChild(file_select.firstChild);
+        }
+
+        // for 迴圈新增 select 至 File List 選單
+        for (let i = 0; i < img_files[choose_folder_index].length; i++) {
+            var option = document.createElement("option");
+            option.text = img_files[choose_folder_index][i];
+            option.id = img_files[choose_folder_index][i];
+            option.value = i;
+            file_select.appendChild(option);
+        };
+        changeImage()
+
+    };
+
+    // 換圖片，將原圖上的畫線清空
+    function clearImage() {
+        move(x, y);
+        refillTable(click_box);
+        click_box = [];
+        all_boxes = [];
+        box_number = 0;
+        createTable(all_boxes); // 寫入 label box table
+        replotSavedRectangle();
     }
-    /*
-    // Display the initialization of model parameter
-    function set_selected_IMG(file_select, Image) {
-        for (i = 0; i < file_select.length; i++) {
-            if (Image == file_select[i].innerText) {
-                document.getElementById("file-select").selectedIndex = String(i);
 
-            }
-        }
-    }
-    */
+    // 讀取 YOLO 辨識結果，繪製到圖片上
+    function readYOLOBoxes() {
+        var folder_select = document.getElementById('folder-select');
+        var file_select = document.getElementById('file-select');
 
-    /*
-        
-        function AddFenceName(text, x1, y1) {
-            ctx.font = "30px Comic Sans MS";
-            ctx.fillStyle = "white";
-            ctx.textAlign = "center";
-            ctx.fillText(text, x1 + 15, y1 - 30);
-        }
-        
-        function Reload() {
-    
-            $.getJSON("../static/Json_Info/camera_info_{{name}}.json", function (result) {
-                $.each(result['fence'], function (i, field) {
-                    var vertex = result['fence'][i]['vertex'];
-                    console.log(i, vertex);
-                    length = vertex.length;
-    
-                    var subvertex = vertex.substr(1, length - 2).split(',');
-                    for (let i = 0; i < subvertex.length; i++) {
-                        point_x_y.push(parseInt(subvertex[i]));
-                    };
-    
-                    all_point_x_y.push(point_x_y);          // 將暫存的位置丟入存檔區       
-                    console.log(all_point_x_y);
-                    FenceNameList.push(i);
-                    box_number += 1;
-                    point_x_y = [];
-                });
-                for (let i = 1; i <= box_number; i++) {
-                    length = all_point_x_y[i - 1].length;
-                    for (let j = 3; j <= length; j += 2) { //將繪製過的區域保持線條上色
-                        ctx.beginPath();
-                        ctx.strokeStyle = "purple";
-                        ctx.lineWidth = 5;
-                        ctx.globalAlpha = 1;
-                        ctx.moveTo(all_point_x_y[i - 1][j - 1], all_point_x_y[i - 1][j]);
-                        ctx.lineTo(all_point_x_y[i - 1][j - 3], all_point_x_y[i - 1][j - 2]);
-                        ctx.closePath();
-                        ctx.stroke();
-                    }
-                    AddFenceName(FenceNameList[i - 1], all_point_x_y[i - 1][0], all_point_x_y[i - 1][1]); // 將繪製過的區域加上名字
-    
-                    Fill(all_point_x_y[i - 1]);   // 將繪製過的區域保持上色
-                };
-            });
-        }
-        function check_Input() {
-            let prevVal = "";
-            document.querySelector('input').addEventListener('input', function (e) {
-                if (this.checkValidity()) {
-                    prevVal = this.value;
-                }
-                else {
-                    this.value = prevVal;
-                }
-            });
-        }
-    */
+        var canvas = document.getElementById('canvas');
+        var width = 960; // canvas.width;
+        var height = 540; //canvas.height;
+
+        // 轉換 0~1 -> 0~960、540
+        txt_list = txt_files[folder_select.selectedIndex][file_select.selectedIndex];
+        txt_length = txt_list.length;
+
+        for (let i = 0; i < txt_length; i++) {
+            yolo_center_x = Math.floor(txt_list[i][1] * width);
+            yolo_center_y = Math.floor(txt_list[i][2] * height);
+            yolo_width = Math.floor(txt_list[i][3] * width);
+            yolo_height = Math.floor(txt_list[i][4] * height);
+
+            js_x = yolo_center_x - 0.5 * yolo_width
+            js_y = yolo_center_y - 0.5 * yolo_height
+            box_number += 1;
+
+            all_boxes.push(['person', js_x, js_y, yolo_width, yolo_height]); // 記錄進所有box資訊
+        };
+    };
+
 </script>
 {% endblock %}

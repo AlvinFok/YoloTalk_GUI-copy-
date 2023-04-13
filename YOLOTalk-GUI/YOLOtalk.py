@@ -4,11 +4,8 @@ from flask.helpers import get_root_path
 from web_ultis import *
 from config import Config
 from web_ultis import Restart_YoloDevice
-from dash_app import make_dash, make_layout, define_callbacks
 from libs.YOLO_SSIM import YoloDevice
 
-
-import dash_bootstrap_components as dbc
 import plotly.express as px
 import pathlib
 import os
@@ -67,7 +64,7 @@ def home():
                 Fence_info = {
                     "vertex": "Full image",
                     "Group": "-",
-                    "Data_file": "coco.data",
+                    "Data_File": "coco.data",
                     "Config_File": "yolov4.cfg",
                     "Weight_File": "yolov4.weights",
                     "Sensitivity": 0.5,
@@ -107,7 +104,7 @@ def home():
                     display_message=False,  # Show the message (FPS)
                     obj_trace=True,  # Object tracking
                     save_img=True,  # Save image when Yolo detect
-                    save_img_original=False,    # Save original image and results when Yolo detect
+                    save_img_original=True,    # Save original image and results when Yolo detect
                     img_expire_day=1,   # Delete the img file if date over the `img_expire_day`
                     save_video=False,   # Save video including Yolo detect results
                     video_expire_day=1,  # Delete the video file if date over the `video_expire_day`
@@ -156,7 +153,7 @@ def plotarea():
         Fence_info = {
             "vertex": vertex,
             "Group": "-",
-            "Data_file": "coco.data",
+            "Data_File": "coco.data",
             "Config_File": "yolov4.cfg",
             "Weight_File": "yolov4.weights",
             "Sensitivity": 0.5,
@@ -264,7 +261,7 @@ def management():
                 Config = Model.replace('.weights', '.cfg')
                 model = Model
 
-            Jdata["fence"][FenceName]["Data_file"] = data
+            Jdata["fence"][FenceName]["Data_File"] = data
             Jdata["fence"][FenceName]["Config_File"] = Config
             Jdata["fence"][FenceName]["Weight_File"] = model
 
@@ -435,60 +432,47 @@ def training():
             IMGpath, shape = replot(alias, URL, Addtime)
             return render_template("plotarea.html", data=IMGpath, name=str(alias), shape=shape, postURL=postURL)
         
-        # if URL == "CHOOSE_IMG":
-        #     alias = request.form.get("area")
-        #     classes = request.form.get("class")
-        #     folder = request.form.get("folder")
-        #     file = request.form.get("file")
-
-        #     print(f"alias : {alias}")
-        #     print(f"classes : {classes}")
-        #     print(f"folder : {folder}")
-        #     print(f"file : {file}")
-
-        #     aliases = os.listdir('static/record')
-        #     folders = os.listdir(f'static/record/{aliases[0]}/img_detect')
-        #     folders.sort()
-
-        #     tmp_folders = []
-        #     for folder in folders:
-        #         dirs_day = os.listdir(f'static/record/{aliases[0]}/img_detect/{folder}')
-        #         for hour in dirs_day:
-        #             tmp_folders.append(f'static/record/{aliases[0]}/img_detect/{folder}/{hour}')
-        #     tmp_folders.sort()
-
-
-        #     files = os.listdir(folder)
-        #     files.sort()
-
-        #     IMGpath = folder + '/' + file
-        #     first_fig = cv2.imread(IMGpath)
-        #     shape = first_fig.shape
-
-        # return render_template("training.html", data=IMGpath, aliases=aliases, folders=tmp_folders, files=files, shape=shape, navs=all_fences_names, postURL=postURL)
     else:
         alias = request.form.get("area")
-
         aliases = os.listdir('static/record')
-        folders = os.listdir(f'static/record/{aliases[0]}/img_detect')
+        folders = os.listdir(f'static/record/{aliases[0]}/img_original')
         folders.sort()
 
         tmp_folders = []
         for folder in folders:
-            dirs_day = os.listdir(f'static/record/{aliases[0]}/img_detect/{folder}')
+            dirs_day = os.listdir(f'static/record/{aliases[0]}/img_original/{folder}')
             for hour in dirs_day:
-                tmp_folders.append(f'static/record/{aliases[0]}/img_detect/{folder}/{hour}')
+                tmp_folders.append(f'static/record/{aliases[0]}/img_original/{folder}/{hour}')
         tmp_folders.sort()
 
-        files = os.listdir(tmp_folders[0])
-        files.sort()
+        All_img_files = []
+        All_txt_files = []
+        for tmp_folder in tmp_folders:
+            files = os.listdir(tmp_folder)
+            files.sort()
 
-        IMGpath = tmp_folders[0] + '/' + files[0]
+            tmp_img = []
+            tmp_txt = []
+            for file in files:
+                if '.jpg' in file:
+                    tmp_img.append(file)
+                elif '.txt' in file:
+                    with open(f'{tmp_folder}/{file}') as f:
+                        lines_txt = []
+                        for line in f.readlines():
+                            # print(f'path = {tmp_folder}/{file}\n')
+                            # print(f'line = {line.split()}\n')
+                            lines_txt.append(line.split())
+                        tmp_txt.append(lines_txt)
 
+            All_img_files.append(tmp_img)
+            All_txt_files.append(tmp_txt)
+
+        IMGpath = tmp_folders[0] + '/' + All_img_files[0][0]
         first_fig = cv2.imread(IMGpath)
         shape = first_fig.shape
 
-    return render_template("training.html", data=IMGpath, aliases=aliases, folders=tmp_folders, files=files, shape=shape, navs=all_fences_names, postURL=postURL)
+    return render_template("training.html", data=IMGpath, aliases=aliases, folders=tmp_folders, img_files=All_img_files, txt_files=All_txt_files,shape=shape, navs=all_fences_names, postURL=postURL)
 
 
 @app.route("/", defaults={"req_path": ""})
@@ -513,6 +497,7 @@ def dir_listing(req_path):
     files = os.listdir(abs_path)  # Show directory contents
     files.sort()
     return render_template("files.html", files=files, navs=all_fences_names)
+
 
 @app.route("/video/<order>", methods=["GET", "POST"])
 def video_feed(order):
