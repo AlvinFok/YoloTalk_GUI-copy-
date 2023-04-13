@@ -6,7 +6,6 @@ from config import Config
 from web_ultis import Restart_YoloDevice
 from libs.YOLO_SSIM import YoloDevice
 
-import plotly.express as px
 import pathlib
 import os
 import json
@@ -255,16 +254,17 @@ def management():
             if Model in ['yolov4', 'yolov4-tiny', 'yolov7', 'yolov7-tiny']:
                 data = Model + '.data'
                 Config = Model + '.cfg'
-                model = Model + '.weight'
+                model = Model + '.weights'
             else:
                 data = Model.replace('.weights', '.data')
                 Config = Model.replace('.weights', '.cfg')
                 model = Model
-
+            old_data = Jdata["fence"][FenceName]["Data_File"]
+            old_Config = Jdata["fence"][FenceName]["Config_File"]
+            old_model = Jdata["fence"][FenceName]["Weight_File"]
             Jdata["fence"][FenceName]["Data_File"] = data
             Jdata["fence"][FenceName]["Config_File"] = Config
             Jdata["fence"][FenceName]["Weight_File"] = model
-
             # Judge sensitivity is changed or not
             old_Sensitivity = Jdata["fence"][FenceName]["Sensitivity"]
             Jdata["fence"][FenceName]["Sensitivity"] = Sensitivity
@@ -272,6 +272,15 @@ def management():
                 print(
                     f"actived_yolo[alias].thresh : {actived_yolo[Alias].thresh}")
                 actived_yolo[Alias].thresh = float(Sensitivity)
+            """
+            更改model
+            """
+            if old_data != data or old_Config != Config or old_model != model:
+                
+                actived_yolo[Alias].data_file="../cfg_person/coco.data"
+                actived_yolo[Alias].config_file="../cfg_person/" + Config
+                actived_yolo[Alias].weights_file="../weights/" + model
+                actived_yolo[Alias].init_Yolo()
 
             with open(filepath, "w", encoding="utf-8") as file:
                 json.dump(Jdata, file, separators=(",\n", ":"), indent=4)
@@ -515,6 +524,44 @@ def video_feed(order):
         )
     else:
         return "Error"
+    
+def train_model(darknet_path, data_path, cfg_path, weights_path, output_path, mode="train", thresh=0.5):
+    """
+    darknet_path: darknet 資料夾與current working dir 的相對路徑
+    data_path: .data file和darknet資料夾的相對路徑
+    cfg_path: .cfg file和darknet資料夾的相對路徑
+    weights_path: .weights file和darknet資料夾的相對路徑
+    mode: "train" 表示使用 ./darkent detector train 指令
+          "valid" 表示使用 ./darkent detector map 指令
+    thresh: ./darkent detector map 指令的 threshold, 預設為0.5
+    -------------------------------------------------------------
+    return 產生的 ./darknet process 的 ID
+    """
+    current_working_dir = os.getcwd()
+    os.chdir(darknet_path)
+    if os.path.exists(output_path):
+        os.remove(output_path)
+    if not os.path.exists(data_path) or not os.path.exists(cfg_path) or not os.path.exists(weights_path):
+        if not os.path.exists(data_path):
+            print(f"file: {data_path} does not exists.")
+        if not os.path.exists(cfg_path):
+            print(f"file: {cfg_path} does not exists.")
+        if not os.path.exists(weights_path):
+            print(f"file: {weights_path} does not exists.")
+        os.chdir(current_working_dir)
+    else:
+        os.chdir(current_working_dir)
+        if mode == "train":
+            command = [f"./darknet detector train {data_path} {cfg_path} {weights_path} -map -dont_show > {output_path}"]
+        elif mode == "valid":
+            command = [f"./darknet detector map {data_path} {cfg_path} {weights_path} -thresh {thresh} > {output_path}"]
+        else:
+            command = [""]
+            print("Invalid mode. Please use \"train\" or \"valid\" string.")
+        p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, universal_newlines=True, cwd= darknet_path)
+        pid = subprocess.check_output(["pidof -s ./darknet"], shell=True)
+
+    return int(pid.decode("utf-8"))
 
 if __name__ == "__main__":
     app.run(debug=Config["DEBUG"], use_reloader=Config["use_reloader"], host=Config["host"], port=Config["port"],)

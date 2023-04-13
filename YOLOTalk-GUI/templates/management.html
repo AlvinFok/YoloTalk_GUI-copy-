@@ -323,7 +323,7 @@
 <script>
     var group_set = new Set()
     var del_id = ""
-    var switchValue = "yolov4.weight"
+    var switchValue = "yolov4.weights"
     let select = document.querySelector("#select-model");
 
     $(document).ready(function () {
@@ -363,7 +363,7 @@
         /*
             Display the initialization of model parameter
         */
-        weight = weight.replace(".weight", "")
+        weight = weight.replace(".weights", "")
         for (i = 0; i < selection_model.length; i++) {
             if (weight == selection_model[i].innerText) {
                 document.getElementById("select-model").selectedIndex = String(i);
@@ -577,7 +577,7 @@
                 "Show_FPS": Show_FPS,
                 "Show_Box": Show_BOX,
             });
-        setTimeout(function () { location.reload(); }, 500);
+        setTimeout(function () { location.reload(); }, 1000);
     };
     function del_confirm() {
 

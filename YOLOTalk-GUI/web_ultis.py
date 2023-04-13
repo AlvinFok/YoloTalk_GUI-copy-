@@ -21,6 +21,7 @@ import datetime
 import random
 # import LineNotify
 import LineNotify_TONG
+import subprocess
 
 
 def on_data(img_path, group, alias, results):
@@ -343,3 +344,42 @@ def replot(alias, URL, Addtime):
         vertexs.append(old_vertex)
 
     return IMGpath, shape
+
+
+def train_model(darknet_path, data_path, cfg_path, weights_path, output_path, mode="train", thresh=0.5):
+    """
+    darknet_path: darknet 資料夾與current working dir 的相對路徑
+    data_path: .data file和darknet資料夾的相對路徑
+    cfg_path: .cfg file和darknet資料夾的相對路徑
+    weights_path: .weights file和darknet資料夾的相對路徑
+    mode: "train" 表示使用 ./darkent detector train 指令
+          "valid" 表示使用 ./darkent detector map 指令
+    thresh: ./darkent detector map 指令的 threshold, 預設為0.5
+    -------------------------------------------------------------
+    return 產生的 ./darknet process 的 ID
+    """
+    current_working_dir = os.getcwd()
+    os.chdir(darknet_path)
+    if os.path.exists(output_path):
+        os.remove(output_path)
+    if not os.path.exists(data_path) or not os.path.exists(cfg_path) or not os.path.exists(weights_path):
+        if not os.path.exists(data_path):
+            print(f"file: {data_path} does not exists.")
+        if not os.path.exists(cfg_path):
+            print(f"file: {cfg_path} does not exists.")
+        if not os.path.exists(weights_path):
+            print(f"file: {weights_path} does not exists.")
+        os.chdir(current_working_dir)
+    else:
+        os.chdir(current_working_dir)
+        if mode == "train":
+            command = [f"./darknet detector train {data_path} {cfg_path} {weights_path} -map -dont_show > {output_path}"]
+        elif mode == "valid":
+            command = [f"./darknet detector map {data_path} {cfg_path} {weights_path} -thresh {thresh} > {output_path}"]
+        else:
+            command = [""]
+            print("Invalid mode. Please use \"train\" or \"valid\" string.")
+        p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, universal_newlines=True, cwd= darknet_path)
+        pid = subprocess.check_output(["pidof -s ./darknet"], shell=True)
+
+    return int(pid.decode("utf-8"))

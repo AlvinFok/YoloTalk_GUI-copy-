@@ -1,0 +1,129 @@
+<!-- 宣告我們要套用模板 -->
+{% extends "base.html" %}
+
+{% block title %} YOLOTalk Training log{% endblock %}
+
+{% block style %}
+<style>
+    /*    ______________ 大看板上的選單 ______________   */
+    nav img {
+        width: 200px;
+    }
+
+    header li {
+        margin: 0 15px;
+        font-weight: bold;
+        font-size: 22px;
+    }
+
+    .dropdown-item {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    /*    ______________ 大看板 ______________   */
+    #intro .jumbotron {
+        height: 100vh;
+        padding: 40px 40px;
+    }
+
+    /*    ______________ files ______________   */
+    #files ul li {
+        display: inline;
+        list-style: none;
+        font-size: 25px;
+        align-items: center;
+        height: 100px;
+    }
+
+    .col-4 {
+        margin-bottom: 50px;
+        align-self: center;
+    }
+
+    .col-4 #down {
+        margin-left: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block intro %}
+<section id="intro">
+    <div class="jumbotron">
+        <div class="row" id="training_status">
+
+        </div>
+        <button onclick="start_training()">train</button>
+        <div class="row" id="training_log">
+
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+<script>
+    var darknet_path = "../darknet";
+    var data_path = "../cfg_person/person.data";
+    var cfg_path = "../cfg_person/yolov4-person.cfg";
+    var weights_path = "../weights/yolov4-tiny.conv.29";
+    $(document).ready(function () {
+        console.log("{{trainURL}} : train url");
+        console.log("{{checkProcessURL}} : check process status url")
+        console.log("{{readTrainingTextURL}} : read txt file url")
+    });
+
+    function start_training() {
+        $.post("{{trainURL}}",
+            {
+                "darknet_path": darknet_path,
+                "data_path": data_path,
+                "cfg_path": cfg_path,
+                "weights_path": weights_path,
+                // "output_path": "../YOLOTalk-GUI/static/train_log.txt",
+                "mode": "train",
+                //若為 valid要提供thresh
+                // "thresh": 0.5
+            },
+
+            function (data, status, jqXHR) {// success callback
+                var training_pid = data.pid;
+                // 若 response 的 pid 是 string，表示 darknet process 沒有建立成功
+                if (training_pid instanceof String) {
+                    document.getElementById("training_status").innerText = training_pid;
+                }
+                // 若 response 的 pid 是 number，就定期檢查 process 狀態以及顯示輸出
+                else if (Number.isInteger(training_pid)) {
+                    var check_training = setInterval(function () {
+                        $.post("{{checkProcessURL}}",
+                            {
+                                "pid": training_pid
+                            },
+                            function (data, status, jqXHR) {// success callback
+                                if (data.running == true) {
+                                    document.getElementById("training_status").innerText = "Training.";
+                                    read_txt("train_log.txt");
+                                } else {
+                                    document.getElementById("training_status").innerText = "Training completed.";
+                                    read_txt("train_log.txt");
+                                    clearInterval(check_training);
+                                }
+                            });
+                    }, 3000)
+                }
+
+            }
+        );
+    }
+    function read_txt(path) {
+        $.post("{{readTrainingTextURL}}",
+            {
+                "path": path
+            },
+            function (data, status, jqXHR) {
+                document.getElementById("training_log").innerText = data.text;
+            })
+    }
+
+</script>
+{% endblock %}
