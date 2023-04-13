@@ -1,0 +1,614 @@
+<!-- 宣告我們要套用模板 -->
+{% extends "base.html" %}
+
+{% block title %} YOLOTalk Training{% endblock %}
+
+{% block style %}
+<style>
+    /*    ______________ 大看板上的選單 ______________   */
+    nav img {
+        width: 200px;
+    }
+
+    header li {
+        margin: 0 15px;
+        font-weight: bold;
+        font-size: 22px;
+    }
+
+    .dropdown-item {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    /*    ______________ 大看板 ______________   */
+    #intro .jumbotron {
+        height: 100vh;
+        padding: 40px 40px;
+    }
+
+    /*    ______________ files ______________   */
+    #files ul li {
+        display: inline;
+        list-style: none;
+        font-size: 25px;
+        align-items: center;
+        height: 100px;
+    }
+
+    /*    ______________ canvas ______________   */
+    #canvas-style {
+        width: 100%;
+        height: 60vh;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+    }
+
+    #canvas {
+        max-width: 100%;
+        max-height: 60vh;
+    }
+</style>
+{% endblock %}
+
+
+{% block intro %}
+<section id="intro">
+    <div class="jumbotron">
+        <div class="row">
+            <!-- Label Area -->
+            <div class="col-sm-7">
+                <div class="card w-60">
+                    <div class="card-header">
+                        <h2>Annotation area</h2>
+                    </div>
+                    <div class="card-body text-center" id="canvas-style">
+                        <canvas id="canvas" width="960" height="540" tabindex='1'
+                            style="background-image:url( ' {{data}} ' ) ;background-size: cover; background-position: center; ">
+                        </canvas>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-grid gap-5 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-info btn-lg" style="margin-right: 50px;">Previous
+                                Image</button>
+                            <button type="button" class="btn btn-info btn-lg">Next Image</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tabel Area -->
+            <div class="col-sm-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Annotated Data</h2>
+                    </div>
+                    <div class="card-body">
+                        <h4>Alias</h4>
+                        <div class="alias-select">
+                            <select id="alias-select" class="custom-select custom-select-lg mb-2"
+                                onchange="selectChange()">
+                                {% for alias in aliases %}
+                                <option id="{{alias}}">{{alias}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <br>
+                        <h4>File Folder</h4>
+                        <div class="folder-select">
+                            <select id="folder-select" class="custom-select custom-select-lg mb-2"
+                                onchange="changeFolder()">
+                                {% for folder in folders %}
+                                <option id="{{folder}}">{{folder}} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <br>
+                        <h4>File List:</h4>
+                        <div class="file-select">
+                            <select id="file-select" class="custom-select custom-select-lg mb-2"
+                                onchange="changeImage()">
+                            </select>
+                        </div>
+                        <br>
+                        <h4>Classes</h4>
+                        <div class="class-select">
+                            <select id="class-select" class="custom-select custom-select-lg mb-2"
+                                onchange="selectChange()">
+                                <option>person</option>
+                                <option>car</option>
+                                <option>cat</option>
+                            </select>
+                        </div>
+                        <br>
+                        <!-- YOLO Label 資訊表格 -->
+                        <h4>Coordinates of Annotations</h4>
+                        <table class="table" id="box_table">
+                            <thead>
+                                <tr id="first_row">
+                                    <!-- <th scope="col">Delete</th> -->
+                                    <th scope="col">Class</th>
+                                    <th scope="col">Center X</th>
+                                    <th scope="col">Center Y</th>
+                                    <th scope="col">W</th>
+                                    <th scope="col">H</th>
+                                </tr>
+                            </thead>
+                            <tbody id="box_info"></tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-danger btn-lg btn-block">Start Training</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+<script>
+
+    // 新增畫布
+    var can = document.getElementById('canvas');
+    var ctx = can.getContext('2d');
+
+    // 讀取 Jinja2 的 files 資料, safe 才不會進行 html 轉碼
+    var txt_files = {{ txt_files | safe
+    }};
+    var img_files = {{ img_files | safe
+    }};
+
+    // 儲存 bounding box 相關 array
+    var all_boxes = [];     // 圖上所有繪製的 bounding boxs
+    var click_box = [];     // 目前所點擊到的 bounding boxs
+
+    // 繪製功能參數
+    var drawing = false;                // 暫停繪製線條功能
+    var drawing_Fillbox = false;        // 暫停繪製選取 box 功能
+
+    // 滑鼠網頁上 offsets、位置參數
+    var offsets = document.getElementById('canvas').getBoundingClientRect();
+    var error_x = Math.floor(offsets.x);
+    var error_y = Math.floor(offsets.y);
+    var x = 0;
+    var y = 0;
+
+    // 紀錄 bounding box 左上角點的暫存參數
+    var tmp_x = 0;
+    var tmp_y = 0;
+    var tmp_w = 0;
+    var tmp_h = 0;
+
+    // 其他參數
+    var choose_class = "";              // select 所選擇的 class
+    var box_number = 0;                 // 警戒範圍數量
+    var timeStart, timeEnd, time;       // 判斷滑鼠按下間隔參數
+    var click_or_drag_time = 350;       // 判斷滑鼠按下間隔 ms
+
+    $(document).ready(function () {
+
+        changeFolder()   // 第一次進入頁面，讀取資料夾第一張照片
+
+        //  Navigate to the drawing page
+        $("a#replot_fence").click(function () {
+            fence = this.text;
+            FormName = "Form_" + fence;
+            document.getElementById(FormName).submit();
+        });
+    });
+
+    // 頁面縮放時，更新 offset 參數
+    $(window).resize(function () {
+        /*
+        link : https://stackoverflow.com/questions/288699/get-the-position-of-a-div-span-tag
+        */
+        var offsets = document.getElementById('canvas').getBoundingClientRect();
+        error_x = Math.floor(offsets.x);
+        error_y = Math.floor(offsets.y);
+    });
+
+    // 按下以後，尚未放開
+    $("canvas").mousedown(function (e) {
+
+        drawing = true;                 // 開始繪製移動的 label box
+        click_box = [];                 // 將剛才點擊到的 label box 清除
+        ctx.clearRect(0, 0, canvas.width, canvas.height);   // 將剛才點擊到的 label box 在圖上清除
+        refillTable(click_box);        // 將剛才點擊到的 label box table 清除
+
+        x = e.pageX - error_x;
+        y = e.pageY - error_y;
+        tmp_x = e.pageX - error_x;      // 得到 label box 第一個點 x
+        tmp_y = e.pageY - error_y;      // 得到 label box 第一個點 y
+        replotSavedRectangle();       // 將已經畫的的 label box 繪製出來
+
+        timeStart = getTimeNow();       // 開始計算拖拉間隔
+    });
+
+    // 按下以後，已經放開，判斷拖拉時間是否超過 click_or_drag_time 來做 "點擊" or "拖拉" 操作
+    $("canvas").mouseup(function (e) {
+        time = setInterval(function () {
+            timeEnd = getTimeNow();     // 得到滑鼠按下放開的間隔時間，判斷是 "拖拉"還是"點擊"事件
+            // 拖拉
+            if (timeEnd - timeStart > click_or_drag_time) {
+                getClasses()      // 得到 label box class
+                getMouseDirect()          // 判斷滑鼠座標往第幾象限方向拉
+                all_boxes.push([choose_class, tmp_x, tmp_y, tmp_w, tmp_h]) // 記錄進所有box資訊
+                createTable(all_boxes); // 寫入 label box table
+                box_number += 1;
+            }
+            // 點擊
+            else {
+                if (box_number > 0) {
+                    checkIsinsideBox(tmp_x, tmp_y)
+                    x = e.pageX - error_x;
+                    y = e.pageY - error_y;
+                };
+            };
+            drawing = false;
+            clearInterval(time);
+        }, 100);
+    });
+
+    // 滑鼠移動事件
+    $("canvas").mousemove(function (e) {
+        var x = e.pageX - error_x;
+        var y = e.pageY - error_y;
+
+        move(x, y);                // 顯示十字線條
+        replotSavedRectangle();    // 將 all_boxes 內的 boxes 再畫出來
+        // 畫出拖曳框框的功能
+        if (drawing) {
+            tmp_w = x - tmp_x;
+            tmp_h = y - tmp_y;
+            plotRectangle(tmp_x, tmp_y, tmp_w, tmp_h);
+        };
+        // 將已經被點擊的 bounding box 塗色功能
+        if (drawing_Fillbox) {
+            fillClickedBox(click_box);
+            fillTable(click_box);
+        }
+    });
+
+    $('canvas').keydown(function (key_event) {
+        // link : https://stackoverflow.com/questions/12886286/addeventlistener-for-keydown-on-canvas
+        var file_select = document.getElementById('file-select');
+
+        if (key_event.keyCode == 46 && click_box != []) {
+            for (let i = 0; i < click_box.length; i++) {
+                for (let j = 0; j < all_boxes.length; j++) {
+                    if ((click_box[i][0] == all_boxes[j][1]) && (click_box[i][1] == all_boxes[j][2]) && (click_box[i][2] == all_boxes[j][3]) && (click_box[i][3] == all_boxes[j][4])) {
+                        all_boxes.splice(j, 1);
+                        box_number -= 1;
+                    };
+                };
+            };
+            click_box = [];
+            move(x, y);             // 將滑鼠座標立刻顯示出來
+            createTable(all_boxes); // 寫入 label box table
+        };
+
+        // 下一張
+        if (key_event.keyCode == 68 && file_select.selectedIndex != file_select.length - 1) {
+            choose_file = file_select.options[file_select.selectedIndex + 1].text;
+            IMGpath = choose_folder + '/' + choose_file;
+            document.getElementById("canvas").style.backgroundImage = 'url(' + IMGpath + ')';
+            file_select.selectedIndex += 1;
+
+            clearImage();           // 原本的圖片清除
+            readYOLOBoxes();        // 讀新的 YOLO boxes
+            createTable(all_boxes); // 原本的表格清除，放上新的表格
+            replotSavedRectangle(); // 畫上新的 YOLO boxes
+
+        };
+
+        // 上一張
+        if (key_event.keyCode == 65 && file_select.selectedIndex != 0) {
+            choose_file = file_select.options[file_select.selectedIndex - 1].text;
+            IMGpath = choose_folder + '/' + choose_file;
+            document.getElementById("canvas").style.backgroundImage = 'url(' + IMGpath + ')';
+            file_select.selectedIndex -= 1;
+            clearImage();
+            readYOLOBoxes();      // 讀新的 YOLO boxes
+            createTable(all_boxes); // 原本的表格清除，放上新的表格
+            replotSavedRectangle();
+        };
+    })
+
+
+    // 點擊前，將移動時的十字線畫出來
+    function move(x1, y1) {
+        // 移動十字
+        ctx.globalAlpha = 0.5;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'gray';
+        ctx.beginPath();
+        ctx.moveTo(x1, 0);
+        ctx.lineTo(x1, 540);
+        ctx.moveTo(0, y1);
+        ctx.lineTo(960, y1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.closePath();
+        ctx.stroke();
+
+        // 移動座標字體
+        ctx.globalAlpha = 1;
+        ctx.font = "20px Comic Sans MS";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        text = String(x1) + "," + String(y1)
+        ctx.fillText(text, x1 + 50, y1 - 20);
+    }
+
+    // 點擊後，將 Label box 的框框繪製出來
+    function plotRectangle(x, y, w, h) {
+
+        ctx.globalAlpha = 1;        // reset the transparency of line
+        ctx.lineWidth = 4;          // line width
+        ctx.strokeStyle = 'red';    // change the color of line
+        ctx.beginPath();
+        ctx.rect(x, y, w, h);
+        ctx.stroke();
+    }
+
+    // 移動時，將所以 Label box 繪製出來
+    function replotSavedRectangle() {
+        if (box_number > 0) {
+            for (let i = 0; i < all_boxes.length; i += 1) {
+                plotRectangle(all_boxes[i][1], all_boxes[i][2], all_boxes[i][3], all_boxes[i][4]) // (x, y, w, h)
+            }
+        }
+    }
+
+    // 將 box_table array 資訊丟到表格上
+    function createTable(tableData) {
+        var table = document.getElementById('box_table');
+        var tableBody = document.getElementById('box_info');
+
+        // 先將舊的 table 資料刪除
+        while (tableBody.hasChildNodes()) {
+            tableBody.removeChild(tableBody.firstChild);
+        }
+
+        tableData.forEach(function (rowData) {
+            var row = document.createElement('tr');
+            var tmp_row = ['class', 'YOLOx', 'YOLOy', 'w', 'h']; // 用來將 JS 格式轉成 YOLO 格式的暫存資料
+            tmp_row[0] = rowData[0];
+            tmp_row[1] = rowData[1] + 0.5 * rowData[3];
+            tmp_row[2] = rowData[2] + 0.5 * rowData[4];
+            tmp_row[3] = rowData[3];
+            tmp_row[4] = rowData[4];
+
+            tmp_row.forEach(function (cellData, index) {
+                var cell = document.createElement('td');
+                cell.appendChild(document.createTextNode(cellData));
+                row.appendChild(cell);
+            });
+            tableBody.appendChild(row);
+        });
+        table.appendChild(tableBody);
+    }
+
+    // 拿到 Class 選項
+    function getClasses() {
+        var select = document.getElementById('class-select');
+        choose_class = select.options[select.selectedIndex].text;
+    };
+
+    // 確認滑鼠是否點到 label box 內部
+    function checkIsinsideBox(x, y) {
+        if (box_number > 0) {
+            for (let i = 0; i < box_number; i++) {  // 用外面這個迴圈找到所有box的點、長度
+                var Polygon = [];
+                var p1 = [all_boxes[i][1], all_boxes[i][2]];
+                var p2 = [all_boxes[i][1] + all_boxes[i][3], all_boxes[i][2]];
+                var p3 = [all_boxes[i][1] + all_boxes[i][3], all_boxes[i][2] + all_boxes[i][4]];
+                var p4 = [all_boxes[i][1], all_boxes[i][2] + all_boxes[i][4]];
+                Polygon.push(p1, p2, p3, p4);
+                if (Isinside([x, y], Polygon)) {    // Return (True or False)
+                    click_box.push([all_boxes[i][1], all_boxes[i][2], all_boxes[i][3], all_boxes[i][4]])
+                };
+            };
+            fillClickedBox(click_box);
+            fillTable(click_box);
+            drawing_Fillbox = true;
+        };
+    };
+
+    // ray-casting algorithm 來找到是否在內部
+    function Isinside(point, vs) {
+
+        var x0 = point[0], y0 = point[1];
+        var inside = false;
+
+        for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+            var xi = vs[i][0], yi = vs[i][1];
+            var xj = vs[j][0], yj = vs[j][1];
+
+            var intersect = ((yi > y0) != (yj > y0))
+                && (x0 < (xj - xi) * (y0 - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+
+        return inside;
+    };
+
+    // 將被點擊到的 label box 塗上顏色
+    function fillClickedBox(click_box) {
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        for (let i = 0; i < click_box.length; i++) {
+            ctx.fillRect(click_box[i][0], click_box[i][1], click_box[i][2], click_box[i][3]);
+        };
+        ctx.fill();
+        ctx.closePath();
+    };
+
+    // 將被點擊到的 label box 對應的表格塗上顏色
+    function fillTable(click_box) {
+        var table_row = document.getElementById('box_info').getElementsByTagName("tr");
+
+        for (var i = 0; i < table_row.length; i++) {
+            var cells = table_row[i].getElementsByTagName("td")
+            table_x = 1 * cells[1].innerText - 0.5 * cells[3].innerText
+            table_y = 1 * cells[2].innerText - 0.5 * cells[4].innerText
+            table_w = 1 * cells[3].innerText
+            table_h = 1 * cells[4].innerText
+            for (let j = 0; j < click_box.length; j++) {
+                if ((table_x == click_box[j][0]) && (table_y == click_box[j][1]) && (table_w == click_box[j][2]) && (table_h == click_box[j][3])) {
+                    table_row[i].style.backgroundColor = "gray";
+                    table_row[i].style.color = "white";
+                };
+            };
+        };
+    };
+
+    // 將被點擊到的 label box 對應的表格取消塗上顏色
+    function refillTable(click_box) {
+        var table_row = document.getElementById('box_info').getElementsByTagName("tr");
+        for (var i = 0; i < table_row.length; i++) {
+            table_row[i].style.backgroundColor = "white";
+            table_row[i].style.color = "black";
+        };
+    }
+
+    // 判斷滑鼠座標往第幾象限方向拉
+    function getMouseDirect() {
+        if (tmp_w < 0 && tmp_h < 0) {       //左上
+            tmp_x += tmp_w
+            tmp_y += tmp_h
+            tmp_w = Math.abs(tmp_w)
+            tmp_h = Math.abs(tmp_h)
+        }
+        else if (tmp_w < 0 && tmp_h > 0) {  //左下
+            tmp_x += tmp_w
+            tmp_w = Math.abs(tmp_w)
+        }
+        else if (tmp_w > 0 && tmp_h < 0) {  //右上
+            tmp_y += tmp_h
+            tmp_h = Math.abs(tmp_h)
+        }
+    }
+
+    // 時間
+    function getTimeNow() {
+        var now = new Date();
+        return now.getTime();
+    }
+
+    function selectChange() {
+        var class_select = document.getElementById('class-select');
+        var alias_select = document.getElementById('alias-select');
+        var folder_select = document.getElementById('folder-select');
+        var file_select = document.getElementById('file-select');
+
+        choose_class = class_select.options[class_select.selectedIndex].text;
+        choose_alias = alias_select.options[alias_select.selectedIndex].text;
+        choose_folder = folder_select.options[folder_select.selectedIndex].text;
+        if (file_select.options.length == 0) {
+            choose_file = "None"
+        }
+        else {
+            choose_file = file_select.options[file_select.selectedIndex].text;
+
+        }
+
+        $.post("{{postURL}}",
+            {
+                "URL": "CHOOSE_IMG",
+                "class": choose_class,
+                "area": choose_alias,
+                "folder": choose_folder,
+                "file": choose_file,
+            },
+
+            function (data, status, jqXHR) {// success callback
+                alert('status : ' + status + ',\nchoose_alias : ' + choose_alias + "\nchoose_folder : " + choose_folder);
+            }
+        );
+        setTimeout(function () {
+            location.reload();
+        }, 5000);
+    }
+
+    // 圖片變換時，換新的背景，並將原本的框線清除，讀新的 YOLO boxes，原本的表格清除，放上新的表格
+    function changeImage() {
+        var folder_select = document.getElementById('folder-select');
+        var file_select = document.getElementById('file-select');
+
+        choose_folder = folder_select.options[folder_select.selectedIndex].text;
+        choose_file = file_select.options[file_select.selectedIndex].text;
+        IMGpath = choose_folder + '/' + choose_file;
+        document.getElementById("canvas").style.backgroundImage = 'url(' + IMGpath + ')';
+
+        clearImage();              // 原本的框線清除
+        readYOLOBoxes();          // 讀新的 YOLO boxes
+        createTable(all_boxes);     // 原本的表格清除，放上新的表格
+        replotSavedRectangle();   // 繪製新的 boxes
+    };
+
+    // for 迴圈新增 select 至 File List 選單
+    function changeFolder() {
+        var folder_select = document.getElementById('folder-select');
+        var file_select = document.getElementById('file-select');
+
+        choose_folder_index = folder_select.options[folder_select.selectedIndex].index;
+        // 先將舊的 select 資料刪除
+        while (file_select.hasChildNodes()) {
+            file_select.removeChild(file_select.firstChild);
+        }
+
+        // for 迴圈新增 select 至 File List 選單
+        for (let i = 0; i < img_files[choose_folder_index].length; i++) {
+            var option = document.createElement("option");
+            option.text = img_files[choose_folder_index][i];
+            option.id = img_files[choose_folder_index][i];
+            option.value = i;
+            file_select.appendChild(option);
+        };
+        changeImage()
+
+    };
+
+    // 換圖片，將原圖上的畫線清空
+    function clearImage() {
+        move(x, y);
+        refillTable(click_box);
+        click_box = [];
+        all_boxes = [];
+        box_number = 0;
+        createTable(all_boxes); // 寫入 label box table
+        replotSavedRectangle();
+    }
+
+    // 讀取 YOLO 辨識結果，繪製到圖片上
+    function readYOLOBoxes() {
+        var folder_select = document.getElementById('folder-select');
+        var file_select = document.getElementById('file-select');
+
+        var canvas = document.getElementById('canvas');
+        var width = 960; // canvas.width;
+        var height = 540; //canvas.height;
+
+        // 轉換 0~1 -> 0~960、540
+        txt_list = txt_files[folder_select.selectedIndex][file_select.selectedIndex];
+        txt_length = txt_list.length;
+
+        for (let i = 0; i < txt_length; i++) {
+            yolo_center_x = Math.floor(txt_list[i][1] * width);
+            yolo_center_y = Math.floor(txt_list[i][2] * height);
+            yolo_width = Math.floor(txt_list[i][3] * width);
+            yolo_height = Math.floor(txt_list[i][4] * height);
+
+            js_x = yolo_center_x - 0.5 * yolo_width
+            js_y = yolo_center_y - 0.5 * yolo_height
+            box_number += 1;
+
+            all_boxes.push(['person', js_x, js_y, yolo_width, yolo_height]); // 記錄進所有box資訊
+        };
+    };
+
+</script>
+{% endblock %}

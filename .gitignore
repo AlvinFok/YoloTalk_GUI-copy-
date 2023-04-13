@@ -4,7 +4,9 @@
 # darknet make file
 darknet/darknet
 darknet/*.so
+darknet/*/*.o
 *.so
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -13,14 +15,17 @@ __pycache__/
 */*/*/__pycache__/
 *.py[cod]
 
+# test file
+testplotly/*
+
 # log file
-log.txt
+YOLOTalk-GUI/log.txt
 
 # python file
 # YOLOTalk-GUI/config.py
-YOLOTalk-GUI/static/alias_pict/*jpg
-YOLOTalk-GUI/static/Json_Info/*json
-YOLOTalk-GUI/static/record/*jpg
+YOLOTalk-GUI/static/alias_pict/*
+YOLOTalk-GUI/static/Json_Info/*
+YOLOTalk-GUI/static/record/*
 
 # big weights file
 weights/yolov4.weights

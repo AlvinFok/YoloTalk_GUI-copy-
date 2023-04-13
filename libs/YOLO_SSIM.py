@@ -67,7 +67,7 @@ class YoloDevice():
         self.video_expire_day = video_expire_day # Delete the video file if date over the `video_expire_day`
         self.img_expire_day = img_expire_day # Delete the img file if date over the `img_expire_day`
         self.only_video_capture = only_video_capture # Only video streaming, not load Yolo Network for prediction and not consume GPU memory
-        self.set_W = set_W # Resize the image width to speed up the predict and save storage space
+        self.set_W = set_W # Resize the image wi# Save video including Yolo detect resultsdth to speed up the predict and save storage space
         self.set_H = set_H # Resize the image height to speed up the predict and save storage space      
         self.only_detect_center_bbox = only_detect_center_bbox # Only judge center bbox
         self.auto_restart = auto_restart # Restart the program when RTSP video disconnection

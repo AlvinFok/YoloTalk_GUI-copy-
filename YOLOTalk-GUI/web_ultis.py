@@ -23,6 +23,29 @@ import random
 import LineNotify_TONG
 
 
+def on_data(img_path, group, alias, results):
+    now = datetime.datetime.now()
+    global tmp
+    for det in results:
+        class_name = det[0]
+        confidence = det[1]
+        center_x, center_y, width, height = det[2]
+        left, top, right, bottom = darknet.bbox2points(det[2])
+        ids = det[3]
+        img_path = f"http://panettone.iottalk.tw:10328/{img_path}"
+        msg = f"\n場域 : {alias},\n網址 : \n{img_path}"
+        if int(now.strftime("%Y%m%d%H%M%S")) > int(
+            (tmp + datetime.timedelta(seconds=3)).strftime("%Y%m%d%H%M%S")
+        ):
+            if len(results) > 0:
+                tmp = now
+                LineNotify_TONG.line_notify(msg)  # LINENOTIFY.py  token
+                # print(alias, img_path, ids)
+                # print(now.strftime("%Y%m%d%H%M%S"))
+                # print(int((tmp+datetime.timedelta(seconds=10)).strftime("%Y%m%d%H%M%S")))
+                # DAN.push('yPerson-I', str(class_name), center_x, center_y, img_path)
+
+
 def GET_POST_URL(url):
     if Config["host"] == "0.0.0.0":
         postURL = os.path.join(
@@ -58,31 +81,36 @@ def Restart_YoloDevice():
             vertex = {}
 
             for key in key_list:
-                old_vertex = Jdata["fence"][key]["vertex"][1:-1]
-                # vertex
-                new_vertex = transform_vertex(old_vertex)
-                vertex[key] = new_vertex
-                # sensitivity
-                old_sensitivity = float(Jdata["fence"][key]["Sensitivity"])
+                if key == "All":
+                    vertex[key] = None
+                    old_sensitivity = float(Jdata["fence"][key]["Sensitivity"])
+                else:
+                    old_vertex = Jdata["fence"][key]["vertex"][1:-1]
+                    new_vertex = transform_vertex(old_vertex)
+                    vertex[key] = new_vertex
+                    old_sensitivity = float(Jdata["fence"][key]["Sensitivity"])
 
         yolo1 = YoloDevice(
-            config_file="../cfg_person/yolov4-tiny.cfg",
-            data_file="../cfg_person/coco.data",
-            weights_file="../weights/yolov4-tiny.weights",
-            thresh=old_sensitivity,
-            output_dir="./static/record/",
-            video_url=URL,
-            is_threading=True,
-            vertex=vertex,
-            alias=alias,
-            display_message=False,
-            obj_trace=True,
-            save_img=True,
-            img_expire_day=1,
-            save_video=False,
-            video_expire_day=1,
-            target_classes=["person"],
-            auto_restart=False,
+            config_file="../cfg_person/yolov4.cfg", #   darknet file
+            data_file="../cfg_person/coco.data",    #   darknet file
+            weights_file="../weights/yolov4.weights",   #   darknet file
+            thresh=old_sensitivity, # Yolo threshold, float, range[0, 1] 
+            output_dir="./static/record/",  # Output dir for saving results
+            video_url=URL,  # Video url for detection
+            is_threading=True,  # Set False if the input is video file
+            vertex=vertex,  # vertex of fence, None -> get all image  
+            alias=alias,    # Name the file and directory
+            display_message=False,  # Show the message (FPS)
+            obj_trace=True, # Object tracking
+            save_img=True,  # Save image when Yolo detect
+            save_img_original=True,    # Save original image and results when Yolo detect 
+            img_expire_day=1,   # Delete the img file if date over the `img_expire_day`
+            save_video=False,   # Save video including Yolo detect results
+            video_expire_day=1, # Delete the video file if date over the `video_expire_day`
+            target_classes=["person"],  # Set None to detect all target
+            auto_restart=False, # Restart the program when RTSP video disconnection
+            using_SSIM=False,   # Using SSIM to find the moving object
+            SSIM_debug=False,   # Draw the SSIM image moving object even Yolo have detected object
         )
 
         print(f"\n======== Activing YOLO , alias:{alias}========\n")
@@ -98,39 +126,15 @@ def read_all_fences():
     oldFences.sort()
     all_fences_names = []
     for name in oldFences:
-        if '.png' or '.jpg' not in name:
+        if name[-4:] not in ['.jpg', '.png', 'jpeg']:
             continue
         name = name[:-4]
         all_fences_names.append(name)
-
     return all_fences_names
 
 
 tmp = "19970101000000"
 tmp = datetime.datetime.strptime(tmp, "%Y%m%d%H%M%S")
-
-
-def on_data(img_path, group, alias, results):
-    now = datetime.datetime.now()
-    global tmp
-    for det in results:
-        class_name = det[0]
-        confidence = det[1]
-        center_x, center_y, width, height = det[2]
-        left, top, right, bottom = darknet.bbox2points(det[2])
-        ids = det[3]
-        img_path = f"http://panettone.iottalk.tw:10328/{img_path}"
-        msg = f"\n場域:{alias},\n網址:\n{img_path}"
-        if int(now.strftime("%Y%m%d%H%M%S")) > int(
-            (tmp + datetime.timedelta(seconds=3)).strftime("%Y%m%d%H%M%S")
-        ):
-            if len(results) > 0:
-                tmp = now
-                LineNotify_TONG.line_notify(msg)  # LINENOTIFY.py  token
-                # print(alias, img_path, ids)
-                # print(now.strftime("%Y%m%d%H%M%S"))
-                # print(int((tmp+datetime.timedelta(seconds=10)).strftime("%Y%m%d%H%M%S")))
-            #     DAN.push('yPerson-I', str(class_name), center_x, center_y, img_path)
 
 
 def transform_vertex(old_vertex):
@@ -149,31 +153,69 @@ def transform_vertex(old_vertex):
 
 def gen_frames(yolo):
     def fill_mask(active: bool, frame, vertex: dict, mask: np.array, pts: list, color):
-        if active != False:
+        """
+            Plot the mask of vertex.
+        """
+        if active != "False":
             # for singal_vertex in vertex.values():
             temp = []
             pts.append(np.array(vertex, dtype=np.int32))
             mask = cv2.fillPoly(mask, pts, color)  # Filling the mask of polygon
             frame = 0.5 * mask + frame
 
-            return frame
+            return frame 
+    def plot_boundingbox(active: bool, frame, detect_target):
+        """
+            Plot the bounding of YOLO detect result.
+        """
+        if active != "False":
+            for target in detect_target:
+                cls = target[0]
+                conf = target[1]
+                box = target[2]
+                left, top, right, bottom = darknet.bbox2points(target[2])
+                id = target[3]
+                if bbox_colors.get(id) == None:
+                    bbox_colors[id] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+                cv2.rectangle(frame, (left, top), (right, bottom), bbox_colors[id], 3)  #   bbox
+                cv2.putText(frame, f'{cls} {conf}', (left, top-10), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=bbox_colors[id], thickness=3) # class conf
+                cv2.circle(frame, (int(box[0]), int(box[1])), radius=2, color=(0,255,0), thickness=2)  #   id  
+                cv2.putText(frame, str(id), (int(box[0]), int(box[1])-20), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0,255,0), thickness=2) # id
+            
+        return frame
+    def show_fps(active: bool, frame, start_time):
+        """
+            Plot the frame include FPS.
+        """
+        if active != "False":
+            fps = round(1 / (time.time() - start_time), 1)
+            cv2.rectangle(frame, (0,0), (200,50), (255,255,255), -1) # show FPS
+            cv2.putText(frame, f'FPS : {str(fps)}', (15,30), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0,0,255), thickness=3)  # show FPS
+            
+        return frame
+    
 
     print(f"========{yolo.alias}  YOLO 影像讀取中========")
-
-    time.sleep(0.5)
     filepath = f"static/Json_Info/camera_info_{str(yolo.alias)}.json"
     with open(filepath, "r", encoding="utf-8") as f:
         Jdata = json.load(f)
     fence_list = list(Jdata["fence"].keys())
     vertex = {}
-    if len(fence_list) == 0:
-        vertex = {}
-    else:
-        for fence in fence_list:
+    Show_FPS = {}
+    Show_Box = {}
+
+    # get json file parematers
+    for fence in fence_list:
+        if fence == "All":
+            vertex = None
+        else:
             old_vertex = Jdata["fence"][fence]["vertex"][1:-1]
             new_vertex = transform_vertex(old_vertex)
             vertex[fence] = new_vertex
-
+        Show_FPS[fence] = Jdata["fence"][fence]["Show_FPS"]
+        print(f"Show_FPS[fence]:{Show_FPS[fence]}")
+        Show_Box[fence] = Jdata["fence"][fence]["Show_Box"]
+        print(f"Show_Box[fence]:{Show_Box[fence]}")
     # use this to compute mask showing time
     detect_target = 0
 
@@ -185,14 +227,16 @@ def gen_frames(yolo):
     bbox_colors = {} 
 
     while True:
+        start = time.time()
         frame = yolo.get_current_frame()
+        frame = frame.copy()
         # judge time schedule
         newtime_min = time.localtime(time.time()).tm_min
         if oldtime_min != newtime_min:
             schedule_on_dict = time_interval(yolo)
             oldtime_min = newtime_min
 
-        if vertex != {}:
+        if vertex != None:
             # draw the polygon lines
             frame = draw_polylines(frame, vertex)
             mask = np.zeros((frame.shape), dtype=np.uint8)
@@ -205,42 +249,28 @@ def gen_frames(yolo):
                         # Filling mask
                         if len(yolo.detect_target) != 0:
                             print(f"[Detect] {yolo.detect_target[:][:2]}")
-                            frame = fill_mask(
-                                True, frame, vertex[fence], mask, pts, (180, 0, 255)
-                            )
+                            frame = fill_mask(True, frame, vertex[fence], mask, pts, (180, 0, 255))
+                            frame = plot_boundingbox(Show_Box[fence], frame, yolo.detect_target)
+                            frame = show_fps(Show_FPS[fence], frame, start_time=start)
                             detect_target = 0  # count mask time
                         else:
                             if detect_target < 3:
-                                frame = fill_mask(
-                                    True, frame, vertex[fence], mask, pts, (180, 0, 255)
-                                )
+                                frame = fill_mask(True, frame, vertex[fence], mask, pts, (180, 0, 255))
+                                frame = plot_boundingbox(Show_Box[fence], frame, yolo.detect_target)
+                                frame = show_fps(Show_FPS[fence], frame, start_time=start)
                                 detect_target += 1
                     else:
-                        frame = fill_mask(
-                            True, frame, vertex[fence], mask, pts, (255, 255, 255)
-                        )
+                        frame = fill_mask(True, frame, vertex[fence], mask, pts, (255, 255, 255))
+                        frame = show_fps(Show_FPS[fence], frame, start_time=start)
         else:
             if len(yolo.detect_target) != 0:
-                # print(f"[Detect] {yolo.detect_target}")
-                for target in yolo.detect_target:
-                    cls = target[0]
-                    conf = target[1]
-                    box = target[2]
-                    pt1 = (int(box[0]-0.5*box[2]), int(box[1]-0.5*box[3]))
-                    pt2 = (int(box[0]+0.5*box[2]), int(box[1]+0.5*box[3]))
-                    id = target[3]
-                    if bbox_colors.get(id) == None:
-                        bbox_colors[id] = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-
-                    cv2.rectangle(frame, pt1, pt2, bbox_colors[id], 3)
-                    cv2.putText(frame, f'{cls} {conf}', pt1, fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=bbox_colors[id])
-                    cv2.putText(frame, str(id), (int(box[0]), int(box[1])), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=bbox_colors[id])  
-
+                frame = plot_boundingbox(Show_Box[fence], frame, yolo.detect_target)
+        time.sleep(1 / 20)  # make sure won't use too many bandwidth!
+        frame = show_fps(Show_FPS[fence], frame, start_time=start)
         ret, buffer = cv2.imencode(".jpg", frame)
         frame = buffer.tobytes()
-
         yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n")
-        time.sleep(1 / 30)  # make sure won't use too many bandwidth!
+        
 
 
 def time_interval(yolo):

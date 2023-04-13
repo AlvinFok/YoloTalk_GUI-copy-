@@ -57,7 +57,6 @@ ZED_CAMERA_v2_8=0
 make
 ```
 
-
 ### NVCC 問題修正
 ```code= 
 /bin/sh: 1: nvcc: not found
