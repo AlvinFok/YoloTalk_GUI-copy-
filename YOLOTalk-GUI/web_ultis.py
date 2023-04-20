@@ -103,7 +103,7 @@ def Restart_YoloDevice():
             alias=alias,    # Name the file and directory
             display_message=False,  # Show the message (FPS)
             obj_trace=True, # Object tracking
-            save_img=True,  # Save image when Yolo detect
+            save_img=False, # Save image when Yolo detect
             save_img_original=True,    # Save original image and results when Yolo detect 
             img_expire_day=1,   # Delete the img file if date over the `img_expire_day`
             save_video=False,   # Save video including Yolo detect results
@@ -371,9 +371,9 @@ def train_model(darknet_path, data_path, cfg_path, weights_path, output_path, mo
             print(f"file: {weights_path} does not exists.")
         os.chdir(current_working_dir)
     else:
-        os.chdir(current_working_dir)
         if mode == "train":
             command = [f"./darknet detector train {data_path} {cfg_path} {weights_path} -map -dont_show > {output_path}"]
+            print(command)
         elif mode == "valid":
             command = [f"./darknet detector map {data_path} {cfg_path} {weights_path} -thresh {thresh} > {output_path}"]
         else:
@@ -381,5 +381,5 @@ def train_model(darknet_path, data_path, cfg_path, weights_path, output_path, mo
             print("Invalid mode. Please use \"train\" or \"valid\" string.")
         p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, universal_newlines=True, cwd= darknet_path)
         pid = subprocess.check_output(["pidof -s ./darknet"], shell=True)
-
+        os.chdir(current_working_dir)
     return int(pid.decode("utf-8"))

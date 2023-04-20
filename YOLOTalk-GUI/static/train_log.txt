@@ -1,0 +1,1 @@
+ CUDNN_HALF=1 

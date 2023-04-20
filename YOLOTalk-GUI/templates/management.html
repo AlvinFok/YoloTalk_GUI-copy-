@@ -176,8 +176,62 @@
                             <option> High </option>
                         </select>
                     </div>
+                    <!--  -->
+                    <!-- object tracking Function -->
+                    <hr size="8px" width="100%">
+                    <label class="col-6 col-form-label-Alarm-level" style="color: red;">Object Tracking Function</label>
+                    <div class="form-management mb-2">
+                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Enable Tracking :</label>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="enable-tracking"
+                                id="enable-tracking-true" checked>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                True
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="show-fps" id="show-fps">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                False
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-management mb-2">
+                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Enable Counting:</label>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="enable-counting"
+                                id="enable-counting-true" checked>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                True
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="show-ssim" id="show-ssim">
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                False
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-management mb-2">
+                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Track Buffer:</label>
+                        <input class="col-5 col-form-control" id="trach-buffer" type="number" step="1" min="0" max="10">
+                        </input>
+                    </div>
+                    <div class="form-management mb-2">
+                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Count In:</label>
+                        <input class="col-5 col-form-control" id="count-in-vertex" type="number" step="1" min="0"
+                            max="10">
+                        </input>
+                    </div>
+                    <div class="form-management mb-2">
+                        <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Count Out:</label>
+                        <input class="col-5 col-form-control" id="count-out-vertex" type="number" step="1" min="0"
+                            max="10">
+                        </input>
+                    </div>
                     <!-- Show Function -->
                     <hr size="8px" width="100%">
+                    <label class="col-4 col-form-label-Alarm-level" style="color: red;">Others Function</label>
                     <div class="form-management mb-2">
                         <label for="recipient-name" class="col-4 col-form-label-Alarm-level">Show FPS :</label>
                         <div class="form-check-inline">
@@ -391,6 +445,7 @@
             }
         }
     }
+
     function sort_tr(test) {
         var choose_option = document.getElementById('sort_option').value    // select 選項值
 
@@ -531,13 +586,15 @@
 
         // $('option:selected').removeAttr("selected");
 
-    }
+    };
+
     function del_Modal(fencename) {
         var text = document.getElementById('text');
         del_id = String(fencename.id);
         text.innerText = "Do you really want to delete : " + fencename.id + " ? ";
         $('#Del_fence_Modal').modal();
-    }
+    };
+
     function edit_confirm() {
 
         var Name = document.getElementById('Edit_Modal_title');
@@ -579,6 +636,7 @@
             });
         setTimeout(function () { location.reload(); }, 1000);
     };
+
     function del_confirm() {
 
         alert(del_id);

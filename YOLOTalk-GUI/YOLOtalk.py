@@ -102,7 +102,7 @@ def home():
                     alias=alias,    # Name the file and directory
                     display_message=False,  # Show the message (FPS)
                     obj_trace=True,  # Object tracking
-                    save_img=True,  # Save image when Yolo detect
+                    save_img=False,  # Save image when Yolo detect
                     save_img_original=True,    # Save original image and results when Yolo detect
                     img_expire_day=1,   # Delete the img file if date over the `img_expire_day`
                     save_video=False,   # Save video including Yolo detect results
