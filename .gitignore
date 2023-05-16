@@ -1,5 +1,8 @@
 *.o
 *.vscode
+venv/
+ByteTrack/
+*.mp4
 
 # darknet make file
 darknet/darknet

@@ -1,0 +1,251 @@
+Time:2023-05-16 00:23:43, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:24:12, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:05, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:55, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:55, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:55, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:55, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:56, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:56, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:56, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:56, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:56, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:56, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:57, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:57, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:57, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:57, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:57, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:57, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:58, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:58, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:58, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:58, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:58, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:58, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:59, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:59, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 00:26:59, [Error] prediction() function error:'Tracker' object has no attribute 'H', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:05, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:55, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:55, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:55, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:55, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:56, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:56, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:56, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:56, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:56, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:56, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:56, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:57, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:57, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:57, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:08:57, [Error] prediction() function error:unsupported operand type(s) for -: 'NoneType' and 'int', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:00, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:31, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:31, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:31, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:31, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:31, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:31, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:31, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:32, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:32, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:32, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:32, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:32, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:32, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:10:32, [Error] prediction() function error:'Tracker' object has no attribute 'detect_target', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:13:21, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:15, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:15, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:15, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:15, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:15, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:16, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:16, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:16, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:16, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:16, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:16, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:17, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:17, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:17, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:17, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:17, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:17, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:18, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:18, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:18, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:18, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:18, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:18, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:18, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:19, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:19, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:19, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:19, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:19, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:19, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:19, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:20, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:20, [Error] prediction() function error:'Tracker' object has no attribute 'count_in_vertex', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:14:48, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:15:30, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_detect', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:15:40, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_detect', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:24:27, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:24:52, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:25:02, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:25:12, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:25:22, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:25:32, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:25:42, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:25:52, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:26:02, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:26:12, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:26:23, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:26:33, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:26:43, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:26:53, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:27:03, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:27:13, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:27:23, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:27:33, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:27:43, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:27:53, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:28:03, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:28:13, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:28:23, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:28:33, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:28:43, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:28:54, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:29:04, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:29:14, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:29:24, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:29:34, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:29:44, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:29:54, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:30:04, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:30:14, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:30:24, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:30:34, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:30:44, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:30:54, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:31:04, [Error] prediction() function error:[Errno 2] No such file or directory: './YOLOTalk-GUI/static/record/test/video_original', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 02:31:11, [Info] Stop the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 04:01:40, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 04:08:56, [Info] Stop the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:39:26, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:05, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:08, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:09, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:10, [Error] prediction() function error:'YoloDevice' object has no attribute 'drawed_image', Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:40:51, [Info] Start the program., Group:, Alias:test, URL:./0325__12__0.mp4 
+Time:2023-05-16 17:43:04, [Info] Stop the program., Group:, Alias:test, URL:./0325__12__0.mp4 

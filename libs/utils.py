@@ -308,6 +308,10 @@ def SSIM(bc_img: np.ndarray, image: np.ndarray):
     
     return score, SSIM_img
 
+def get_id_color(id):
+    # assign each id with a color
+    return ( (id * 3 + 15) % 255, (id * 10 + 100) % 255,(id * 4 + 1) % 255)
+
 
 def parse_args():
     """

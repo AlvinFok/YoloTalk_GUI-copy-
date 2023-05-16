@@ -17,25 +17,23 @@ import numpy as np
 from motpy.testing_viz import draw_detection, draw_track
 from skimage.metrics import structural_similarity
 from sklearn import ensemble, metrics, preprocessing
-
-sys.path.insert(1, 'multi-object-tracker')
-from motpy import Detection, MultiObjectTracker
 from darknet import darknet
+
 from libs.utils import *
-from motrackers import SORT, CentroidKF_Tracker, CentroidTracker, IOUTracker
-from motrackers.utils import draw_tracks
 from libs.SSIM_utils import SSIM_test_analyze
+#BYTE tracker
+from ByteTrack.yolox.tracker.byte_tracker import BYTETracker
 
 
 class YoloDevice():
     def __init__(self, data_file="", config_file="", weights_file="", data_file2=None, config_file2=None, weights_file2=None,
-                 video_url="", output_dir="", target_classes=None, thresh=0.5, vertex=None, alias="demo", group="", obj_trace=True,
-                 tracker_mode=1, is_threading=True, skip_frame=None, is_dir=False, is_count_obj=False, only_detect_center_bbox=False,
+                 video_url="", output_dir="", target_classes=None, thresh=0.5, vertex=None, alias="demo", group="",
+                is_threading=True, skip_frame=None, is_dir=False, is_count_obj=False, only_detect_center_bbox=False,
                  save_img=True, save_img_original=False, save_video=True, save_video_original=False, only_video_capture=False,
                  video_expire_day=None,  img_expire_day=None, display_message=True,  is_draw_polygon=True, auto_restart=True, 
                  restart_hour=None, set_W=None, set_H=None,
                  using_SSIM=False, SSIM_diff_area_size=3000, SSIM_optimal_thresh_path=None, SSIM_debug=False,
-                 test_SSIM=False, save_test_SSIM_img=True, gt_dir_path=""
+                 test_SSIM=False, save_test_SSIM_img=True, gt_dir_path="",
                  ):
         
         """
@@ -56,8 +54,6 @@ class YoloDevice():
         self.target_classes = target_classes # Set None to detect all target
         self.is_draw_polygon = is_draw_polygon # Draw the polygon if Yolo detect the target object
         self.group = group # Name the folder and file
-        self.obj_trace = obj_trace # Object tracking
-        self.tracker_mode = tracker_mode # Different algorithm for object tracking (self.tracker[<index>])
         self.is_threading = is_threading # Set False if the input is video file
         self.is_dir = is_dir # Read the image from dictionary
         self.save_img = save_img # Save image when Yolo detect
@@ -109,8 +105,15 @@ class YoloDevice():
         self.output_dir_img_draw = os.path.join(self.output_dir, self.alias, "img_detect")
         self.output_dir_video_draw = os.path.join(self.output_dir, self.alias, "video_detect")  
         
+        create_dir(self.output_dir_img)
+        create_dir(self.output_dir_video)
+        create_dir(self.output_dir_img_draw)
+        create_dir(self.output_dir_video_draw)
+        
+        
         if self.save_video:
             create_dir(self.output_dir_video_draw)
+            
         if self.save_video_original:
             create_dir(self.output_dir_video)
         
@@ -252,25 +255,6 @@ class YoloDevice():
                         frame_lum = int(avg_color_img(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)))
                         self.bc_img_list.append({str(frame_lum)+".jpg": {"brightness": frame_lum, "img": img}}) 
                 
-        """
-          Initialize object tracking parameter.
-        """
-        self.id_storage = [] # Save each object ID
-        self.bbox_colors = {} # Store object tracking object bbox color        
-        self.tracker = [MultiObjectTracker(
-                            dt = 1 / 30,
-                            tracker_kwargs = {'max_staleness': 5},
-                            model_spec = {'order_pos': 1, 'dim_pos': 2,
-                                        'order_size': 0, 'dim_size': 2,
-                                        'q_var_pos': 5000., 'r_var_pos': 0.1},
-                            ), 
-                        CentroidTracker(max_lost=3, tracker_output_format='mot_challenge'),
-                        CentroidKF_Tracker(max_lost=3, tracker_output_format='mot_challenge'),
-                        SORT(max_lost=3, tracker_output_format='mot_challenge', iou_threshold=0.1),
-                        IOUTracker(max_lost=3, iou_threshold=0.1, min_detection_confidence=0.4, max_detection_confidence=0.7,
-                                   tracker_output_format='mot_challenge')
-                       ]
-        
             
         """
           Initialize cv2.VideoWriter() for saveing video.
@@ -650,20 +634,7 @@ class YoloDevice():
                     for det in detect_filter(self.detections, self.target_classes, 
                                              self.vertex[each_vertex_key], self.only_detect_center_bbox):
                         self.detect_target.append(det)
-
-
-                """
-                  Draw the bounding box which Yolo detect.
-                  If self.obj_trace=True, the object ID will be put on the target object.
-                """
-                if self.obj_trace:
-                    if self.tracker_mode == 0:
-                        image_detect,  self.detect_target = self.object_tracker_motpy(self.frame.copy(), self.detect_target)    
-                    else:
-                        image_detect, self.detect_target = self.object_tracker(self.frame.copy(), self.detect_target)    
-                else:
-                    image_detect = draw_boxes(self.detect_target, self.frame.copy(), 
-                                              self.class_colors, self.target_classes)
+                    
 
                 # Find the moving object using SSIM
                 if self.using_SSIM or self.test_SSIM:
@@ -692,9 +663,9 @@ class YoloDevice():
 
                 # Draw the polygon
                 if self.is_draw_polygon: 
-                    image_detect = draw_polylines(image_detect, self.vertex)      
-
-
+                    self.drawed_image = draw_polylines(self.frame.copy(), self.vertex)      
+                
+                
                 # Save the image with bounding box when target detected
                 if self.save_img and len(self.detect_target) > 0:                
                     save_path_img = self.save_img_draw(image_detect)
@@ -950,123 +921,6 @@ class YoloDevice():
         return is_find_moving_obj, image, moving_obj_area         
         
     
-    # https://github.com/adipandas/multi-object-tracker.git
-    def object_tracker(self, image: np.ndarray, detect_target: list) -> tuple:
-        """
-          Implement the following object tracking: 
-              1. CentroidTracker        
-              2. CentroidKF_Tracker
-              3. SORT
-              4. IOUTracker
-        """
-        boxes = []
-        confidence = []
-        class_ids = []
-        tracking_detect_target = []        
-        
-        # Convert the Yolo results to object tracking format
-        for r in detect_target:
-            center_x, center_y, width, height = r[2]
-            left, top, right, bottom = darknet.bbox2points(r[2])
-            boxes.append([left, top, width, height])
-            confidence.append(int(float(r[1])))
-            class_ids.append(int(self.target_classes.index(r[0])))
-        
-        # `output_tracks` is a list with each element containing tuple of
-        # (<frame>, <id>, <bb_left>, <bb_top>, <bb_width>, <bb_height>, <conf>, <x>, <y>, <z>)
-        output_tracks = self.tracker[self.tracker_mode].update(np.array(boxes), np.array(confidence), 
-                                                               np.array(class_ids))        
-        
-        # Re-assigned each bbox        
-        for track in output_tracks:
-            frame, idx, bb_left, bb_top, bb_width, bb_height, confidence, x, y, z = track
-            assert len(track) == 10
-#             print(track)
-            bbox = (bb_left+bb_width/2, bb_top+bb_height/2,  bb_width, bb_height)
-    
-            # Put the result to detect_target 
-            for r in detect_target:
-                center_x, center_y, width, height = r[2]
-                left, top, right, bottom = darknet.bbox2points(r[2])
-                
-                # Match the object
-                if int(left) == int(bb_left) and int(width) == int(bb_width)\
-                   and int(height) == int(bb_height): 
-                    obj_name = self.target_classes[int(self.target_classes.index(r[0]))]
-                    tracking_detect_target.append((obj_name, confidence, bbox, idx))
-                    break
-
-            
-            # Count object ID appear frequency
-            if self.is_count_obj:
-                if self.count_obj.get(idx) is None:
-                    self.count_obj[idx] = 0
-                else:
-                    self.count_obj[idx] += 1                
-            
-            
-            # Assigen each object ID a color for drawing bounding box
-            if self.bbox_colors.get(idx) == None:
-                self.bbox_colors[idx] = (random.randint(0, 255),
-                                        random.randint(0, 255),
-                                        random.randint(0, 255))
-                
-            cv2.rectangle(image, (int(bb_left), int(bb_top)), 
-                          (int(bb_left+bb_width), int(bb_top+bb_height)), self.bbox_colors[idx], 2)
-            image = draw_tracks(image, output_tracks) # Draw the object ID
-            
-            
-            # Put the score and class to the image
-            txt = str(obj_name) + " "+ str(confidence)
-            cv2.putText(image, txt, (int(bb_left), int(bb_top-7)) ,
-                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                        fontScale=0.5, color=self.bbox_colors[idx])        
-        
-        return image, tracking_detect_target
-    
-    
-    # https://github.com/wmuron/motpy.git
-    def object_tracker_motpy(self, image: np.ndarray, detect_target: list) -> tuple:
-        """
-          Implement the following object tracking: 
-              1. Kalman-based tracker
-          This tracking results may including bounding box
-          which object tracking algorithm predict instead of Yolo detection.
-        """
-        boxes = []
-        scores = []
-        class_ids = []
-        tracking_detect_target = []
-        
-        # Convert the results to the object tracking format
-        for r in detect_target:
-            boxes.append(darknet.bbox2points(r[2]))
-            scores.append(float(r[1]))
-            class_ids.append(r[0])        
-            
-        self.tracker[self.tracker_mode].step(detections=[Detection(box=b, score=s, class_id=l)\
-                                            for b, s, l in zip(boxes, scores, class_ids)])
-        tracks = self.tracker[self.tracker_mode].active_tracks(min_steps_alive=3)
-        
-        
-        # Re-assigned each bbox        
-        for track in tracks:            
-            if track.id not in self.id_storage:
-                self.id_storage.append(track.id) # convert random number track.id to index
-                
-            id_index = self.id_storage.index(track.id) # the order of elements in the python list is persistent                
-            tracking_detect_target.append((track.class_id, track.score, track.box, id_index)) # put the result to detect_target            
-            draw_track(image, track, thickness=2, text_at_bottom=True, text_verbose=0) # draw the bbox
-            
-             # Put the object ID to image
-            txt = track.class_id + " "+ str(track.score) +" ID:" + str(id_index)
-            cv2.putText(image, txt, (int(track.box[0]), int(track.box[1])-7),
-                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                        fontScale=0.5, color=(255,255,0))
-            
-        return image, tracking_detect_target
-    
-    
     def set_listener(self, on_detection: callable):
         self.detection_listener = on_detection
         
@@ -1295,4 +1149,4 @@ class YoloDevice():
         
         self.SSIM_results.analyze() # Generate SSIM optimal threshold in each luminance
         
-        
+    
